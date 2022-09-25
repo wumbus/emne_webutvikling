@@ -1,12 +1,14 @@
 import React from "react";
-import { getProject, getProjectIssues } from "../services/api";
-import { ProjectType, IssuesType } from "../services/api";
+import { getProject, getProjectIssues, getMembers } from "../services/api";
+// import { ProjectType, IssuesType, MembersType } from "../services/api";
+import './css/viewInfo.css';
 
 class ViewInfo extends React.Component {
   state = {
     token: localStorage.getItem("token") || "",
     data: " ",
-    issues: []
+    issues: null,
+    members: null
   };
 
   componentDidMount() {
@@ -28,12 +30,8 @@ class ViewInfo extends React.Component {
     
 
     const data: any = getProject(this.state.token);
-    console.log(data);
-    console.log(data.name);
-    console.log(data.build_timeout);
 
     const requestIssues: any = getProjectIssues(this.state.token);
-    
     requestIssues.then((issues:any) => {
         console.log(issues);
         this.setState({
@@ -42,11 +40,18 @@ class ViewInfo extends React.Component {
 
     }).catch((err:any) => {
         console.log("fakk");
-        
     });
     
-    // console.log(issues);
-    // console.log(issues[0][1]);
+    const requestMembers: any = getMembers(this.state.token);
+    requestMembers.then((members:any) => {
+        console.log(members);
+        this.setState({
+            members: members
+        });
+
+    }).catch((err:any) => {
+        console.log("fakk");
+    });
   }
 
   render() {
@@ -54,9 +59,14 @@ class ViewInfo extends React.Component {
       <div>
         <h1>Hi</h1>
         <p>{this.state.token}</p>
-        <div>
-            <p>Her kommer data:</p>
-            <p>{this.state.issues}</p>
+        <div className="row">
+            <div className="column members">
+                <p>Her kommer liste over members</p>
+            </div>
+            <div className="column commits">
+                <p> Her kommer en graf</p>
+            </div>
+            {/* <p>{this.state.issues}</p> */}
             {/* <p>{getProject(this.state.token)}</p> */}
         </div>
       </div>

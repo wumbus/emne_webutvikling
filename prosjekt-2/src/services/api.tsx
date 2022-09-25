@@ -14,13 +14,13 @@ export type IssuesType = {
     username: string
 }
 
-class Assignee extends React.Component {
-
-    constructor(props: any, username: string) {
-        super(props);
-        this.state = { username: username};
-    }
+export type MembersType = {
+    username: string,
+    name: string,
+    avatar_url: string,
+    access_level: number
 }
+
 
 // glpat-9CzoD9y7CQx2ujy4Ubmx
 
@@ -56,4 +56,27 @@ export const getProjectIssues = async (token: string) => {
     //   return dataParsed;
     return issuesArray;
 }
+
+
+export const getMembers = async (token: string) => {
+    const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/members/all?private_token=${token}`);
+    const data: any = await res.json();
+
+    const membersArray: Array<any>  = [];
+
+    data.forEach((member: MembersType) => {
+        const { username, name, avatar_url, access_level } = member;
+        // console.log(iid, title, assignee["username"]);
+        membersArray.push([username, name, avatar_url, access_level.toString()]);
+    });
+
+
+    // const { iid, title, assignee } = data;
+    // console.log(iid, title, assignee, data);
+
+    //   return dataParsed;
+    return membersArray;
+}
+
+
 
