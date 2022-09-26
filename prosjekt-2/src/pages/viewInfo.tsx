@@ -1,4 +1,5 @@
 import React from "react";
+import {MembersList, MemberItem} from "../components/User"
 import { getProject, getProjectIssues, getMembers } from "../services/api";
 // import { ProjectType, IssuesType, MembersType } from "../services/api";
 import './css/viewInfo.css';
@@ -8,7 +9,8 @@ class ViewInfo extends React.Component {
     token: localStorage.getItem("token") || "",
     data: " ",
     issues: null,
-    members: null
+    members: [1, 2],
+    sorting_members: "number"
   };
 
   componentDidMount() {
@@ -62,12 +64,11 @@ class ViewInfo extends React.Component {
         <div className="row">
             <div className="column members">
                 <p>Her kommer liste over members</p>
+                <MembersList members={this.state.members} sort="number"/>
             </div>
             <div className="column commits">
                 <p> Her kommer en graf</p>
             </div>
-            {/* <p>{this.state.issues}</p> */}
-            {/* <p>{getProject(this.state.token)}</p> */}
         </div>
       </div>
     );

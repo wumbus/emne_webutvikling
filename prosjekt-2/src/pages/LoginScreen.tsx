@@ -9,6 +9,7 @@ class LoginScreen extends React.Component {
 
   state = {
     token: "",
+    project_id:0,
     rememberMe: false
   }
 
@@ -36,6 +37,10 @@ class LoginScreen extends React.Component {
   render()  {
     return (
         <form onSubmit={this.handleFormSubmit}>
+            <label>
+                Project ID: <input name="project_id" value ={this.state.project_id} onChange={this.handleChange}></input>
+            </label>
+            <br/>
             <label>
                 Access Token: <input name = "token" value={this.state.token} onChange={this.handleChange}/>
             </label>
