@@ -1,0 +1,16 @@
+.row {
+    display: flex;
+}
+
+.column {
+    padding: 10px;
+}
+
+.column.members {
+    /* How much of the width should it take up? a ralative factor */
+    flex: 2;
+}
+
+.column.commits {
+    flex: 10;
+}
