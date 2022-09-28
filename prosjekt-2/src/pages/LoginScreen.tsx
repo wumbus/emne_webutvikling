@@ -10,27 +10,33 @@ class LoginScreen extends React.Component {
   state = {
     token: "",
     project_id:0,
-    rememberMe: false
+    rememberMe: true
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>): void =>{
     const input = event.target;
-    const value = input.type === 'checkbox' ? input.checked : input.value;
+    const value = input.value;
 
     this.setState({[input.name]: value});
   };
 
   handleFormSubmit = () => {
-      const {token, rememberMe} = this.state;
-      localStorage.setItem('rememberMe', rememberMe.toString());
-      localStorage.setItem('token', rememberMe ? token : '');
-      getProject(token);
+      const {token, project_id} = this.state;
+      localStorage.setItem('token', token);
+      localStorage.setItem('project_id', project_id.toString());
+      getProject(token, project_id.toString()).then( message => {
+        // if (message == 200) {
+
+        // }
+      })
+ 
+
+
   };
 
   componentDidMount(){
-      const rememberMe = localStorage.getItem('rememberMe') === 'true';
-      const token = rememberMe ? localStorage.getItem('token') : '';
-      this.setState({token, rememberMe});
+      const token = localStorage.getItem('token');
+      this.setState({token});
   }
   
 
@@ -45,9 +51,6 @@ class LoginScreen extends React.Component {
                 Access Token: <input name = "token" value={this.state.token} onChange={this.handleChange}/>
             </label>
             <br/>
-            <label>
-                <input name= "rememberMe" checked={this.state.rememberMe} onChange={this.handleChange} type="checkbox"/> Remember Me
-            </label>
             <button type = "submit">Submit</button>
         </form>
     );

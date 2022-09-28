@@ -1,82 +1,102 @@
 import React from "react";
 
 export type ProjectType = {
-    id: number,
-    description: string | null,
-    name: string,
-    creator_id: number
-}
+  id: number;
+  description: string | null;
+  name: string;
+  creator_id: number;
+  message: string;
+};
 
 export type IssuesType = {
-    iid: number,
-    title: string,
-    assignee: any,
-    username: string
-}
+  iid: number;
+  title: string;
+  assignee: any;
+  username: string;
+};
 
 export type MembersType = {
-    username: string,
-    name: string,
-    avatar_url: string,
-    access_level: number
-}
-
+  username: string;
+  name: string;
+  avatar_url: string;
+  access_level: number;
+};
 
 // glpat-9CzoD9y7CQx2ujy4Ubmx
 
-export const getProject = async (token: string) => {
-    const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464?private_token=${token}`);
-    const data: ProjectType = await res.json();
-    //   var dataParsed = await res.json();
+// export const getProject = async (token: string, project_id: string) => {
+//     const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}?private_token=${token}`);
+//     const data: ProjectType = await res.json();
+//     //   var dataParsed = await res.json();
 
-    const { id, name, creator_id } = data;
-    console.log(id, name, creator_id, data);
+//     const { id, name, creator_id } = data;
+//     console.log(id, name, creator_id, data);
 
-    //   return dataParsed;
-    return data;
-}
+//     //   return dataParsed;
+//     return data;
+// }
 
-export const getProjectIssues = async (token: string) => {
-    const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/issues?private_token=${token}`);
-    const data: any = await res.json();
-    //   var dataParsed = await res.json();
+export const getProject = async (token: string, project_id: string) => {
+  await fetch(
+    `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}?private_token=${token}`
+  ).then((res) => {
 
-    const issuesArray: Array<any>  = [];
+    let statusCode = res.status,
+        success = res.ok
 
-    data.forEach((issue: IssuesType) => {
-        const { iid, title, assignee } = issue;
-        console.log(iid, title, assignee["username"]);
-        issuesArray.push([iid.toString(), title, assignee["username"]]);
+    res.json().then((data : ProjectType) => {
+      //   var dataParsed = await res.json();
+      
+      return data.message
+
+
+      //   return dataParsed;
     });
+  })
+  .catch( err => {
 
+  })
+};
 
-    // const { iid, title, assignee } = data;
-    // console.log(iid, title, assignee, data);
+export const getProjectIssues = async (token: string, project_id: string) => {
+  const res = await fetch(
+    `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/issues?private_token=${token}`
+  );
+  const data: any = await res.json();
+  //   var dataParsed = await res.json();
 
-    //   return dataParsed;
-    return issuesArray;
-}
+  const issuesArray: Array<any> = [];
 
+  data.forEach((issue: IssuesType) => {
+    const { iid, title, assignee } = issue;
+    console.log(iid, title, assignee["username"]);
+    issuesArray.push([iid.toString(), title, assignee["username"]]);
+  });
 
-export const getMembers = async (token: string) => {
-    const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/members/all?private_token=${token}`);
-    const data: any = await res.json();
+  // const { iid, title, assignee } = data;
+  // console.log(iid, title, assignee, data);
 
-    const membersArray: Array<any>  = [];
+  //   return dataParsed;
+  return issuesArray;
+};
 
-    data.forEach((member: MembersType) => {
-        const { username, name, avatar_url, access_level } = member;
-        // console.log(iid, title, assignee["username"]);
-        membersArray.push([username, name, avatar_url, access_level.toString()]);
-    });
+export const getMembers = async (token: string, project_id: string) => {
+  const res = await fetch(
+    `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/members/all?private_token=${token}`
+  );
+  const data: any = await res.json();
 
+  const membersArray: Array<any> = [];
 
-    // const { iid, title, assignee } = data;
-    // console.log(iid, title, assignee, data);
+  data.forEach((member: MembersType) => {
+    const { username, name, avatar_url, access_level } = member;
+    // console.log(iid, title, assignee["username"]);
+    membersArray.push([username, name, avatar_url, access_level.toString()]);
+  });
 
-    //   return dataParsed;
-    return membersArray;
-}
+  // const { iid, title, assignee } = data;
+  // console.log(iid, title, assignee, data);
 
-
-
+  //   return dataParsed;
+  return membersArray;
+};

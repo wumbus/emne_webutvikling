@@ -7,6 +7,7 @@ import './css/viewInfo.css';
 class ViewInfo extends React.Component {
   state = {
     token: localStorage.getItem("token") || "",
+    project_id: localStorage.getItem("project_id") || "",
     data: " ",
     issues: null,
     members: [1, 2],
@@ -25,15 +26,15 @@ class ViewInfo extends React.Component {
     }
     console.log(this.state.token);
     this.setState({
-        data: getProject(this.state.token)
+        data: getProject(this.state.token, this.state.project_id)
     });
 
     console.log(this.state.data);
     
 
-    const data: any = getProject(this.state.token);
+    const data: any = getProject(this.state.token, this.state.project_id);
 
-    const requestIssues: any = getProjectIssues(this.state.token);
+    const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
     requestIssues.then((issues:any) => {
         console.log(issues);
         this.setState({
@@ -44,7 +45,7 @@ class ViewInfo extends React.Component {
         console.log("fakk");
     });
     
-    const requestMembers: any = getMembers(this.state.token);
+    const requestMembers: any = getMembers(this.state.token, this.state.project_id);
     requestMembers.then((members:any) => {
         console.log(members);
         this.setState({
