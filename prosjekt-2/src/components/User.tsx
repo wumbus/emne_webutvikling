@@ -44,11 +44,13 @@ export function MembersList(props: { members: any, sort: any, filterBy: any }) {
     }
     if (filterBy[3]) {
         // Bots
-        // membersOrg.forEach((member:any) => {
-        //     if (member[3] == "50") {
-        //         members.push(member)
-        //     }
-        // });
+        membersOrg.forEach((member:any) => {
+            console.log(member[0]);
+            
+            if (member[0].includes("_bot")) {
+                members.push(member)
+            }
+        });
     }
 
     // if none are selected show all
