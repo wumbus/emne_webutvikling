@@ -15,10 +15,10 @@ export function MembersList(props: { members: any, sort: any, filterBy: any }) {
     const sorting = props.sort;
     const filterBy = props.filterBy;
 
-    console.log(sorting);
-    console.log(filterBy);
-    console.log(membersOrg);
-    console.log(membersOrg[0]);
+    // console.log(sorting);
+    // console.log(filterBy);
+    // console.log(membersOrg);
+    // console.log(membersOrg[0]);
 
     let members: any = [];
     if (filterBy[0]) {
@@ -60,11 +60,11 @@ export function MembersList(props: { members: any, sort: any, filterBy: any }) {
         });
     }
 
-    console.log(members);
+    // console.log(members);
 
 
     if (sorting == "number") {
-        console.log("fakk 2");
+        // console.log("fakk 2");
         members.sort((a: any, b: any) => b[3] - a[3]);
     } else if (sorting == "name") {
         members.sort();

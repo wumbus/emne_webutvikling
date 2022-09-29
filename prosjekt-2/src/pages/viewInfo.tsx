@@ -2,12 +2,12 @@ import React from "react";
 import { ListFormat } from "typescript";
 import { CommitsView } from "../components/commits";
 import { MembersList } from "../components/User"
-import { getProject, getProjectIssues, getMembers, getCommits } from "../services/api";
+import { getProject, getProjectIssues, getMembers, getCommits, getCommitsByAllBranches } from "../services/api";
 // import { ProjectType, IssuesType, MembersType } from "../services/api";
 import './css/viewInfo.css';
 
 
-class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any, commits:any }> {
+class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any, commits:any, commitsByBranch:any }> {
     constructor(props: any) {
         super(props);
 
@@ -18,7 +18,8 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
             members: [1, 2],
             sorting_members: " ",
             checkboxes: [false, false, false, false],
-            commits: [1,2]
+            commits: [1,2],
+            commitsByBranch: [1,2]
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -29,19 +30,19 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
 
 
     handleChange(event: any) {
-        console.log("Jeg endres");
-        console.log(event.target.value);
+        // console.log("Jeg endres");
+        // console.log(event.target.value);
 
         this.setState({
             sorting_members: event.target.value
         });
-        console.log(this.state.sorting_members);
+        // console.log(this.state.sorting_members);
         // window.location.reload();
     }
 
     handleCheckboxChange(event: any) {
-        console.log(event.target.checked);
-        console.log(event.target.id);
+        // console.log(event.target.checked);
+        // console.log(event.target.id);
         const id = parseInt(event.target.id);
 
         let checkboxes = this.state.checkboxes;
@@ -51,7 +52,7 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
             checkboxes
         });
 
-        console.log(this.state.checkboxes);
+        // console.log(this.state.checkboxes);
     }
 
 
@@ -65,19 +66,19 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
                 token: localStorage.getItem("token"),
             });
         }
-        console.log(this.state.token);
+        // console.log(this.state.token);
         this.setState({
             data: getProject(this.state.token)
         });
 
-        console.log(this.state.data);
+        // console.log(this.state.data);
 
 
         const data: any = getProject(this.state.token);
 
         const requestIssues: any = getProjectIssues(this.state.token);
         requestIssues.then((issues: any) => {
-            console.log(issues);
+            // console.log(issues);
             this.setState({
                 issues: issues
             });
@@ -88,7 +89,7 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
 
         const requestMembers: any = getMembers(this.state.token);
         requestMembers.then((members: any) => {
-            console.log(members);
+            // console.log(members);
             this.setState({
                 members: members
             });
@@ -99,7 +100,7 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
 
         const requestCommits: any = getCommits(this.state.token);
         requestCommits.then((commits: any) => {
-            console.log(commits);
+            // console.log(commits);
             this.setState({
                 commits: commits
             });
@@ -110,6 +111,14 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
         }).catch((err: any) => {
             console.log("fakk commits");
         });
+
+        const requestCommitsByAllBranches: any = getCommitsByAllBranches(this.state.token);
+        requestCommitsByAllBranches.then((commits: any) => {
+            console.log(commits);
+        }).catch((err: any) => {
+            console.log("fakk commits");
+        });
+
     }
 
     render() {
