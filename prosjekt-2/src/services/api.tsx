@@ -39,19 +39,22 @@ export type MembersType = {
 export const getProject = async (token: string, project_id: string) => {
   await fetch(
     `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}?private_token=${token}`
-  ).then((res) => {
+  )
+    .then((res) => {
+      if (res.ok) {
+        // True if HTTP status code is 200-299
+        console.log(res.ok)
+        console.log(res)
+        localStorage.setItem("connection_established", "true");
+      } else {
+        console.log("whyyyy")
+        localStorage.setItem("connection_established", "false");
 
-    if (res.ok) { // True if HTTP status code is 200-299
-      res.json().then((data : ProjectType) => {        
-        return true
-      });
-    }
-    return false
-
-  })
-  .catch( err => {
-    return false;
-  })
+      }
+    })
+    .catch((err) => {
+      localStorage.setItem("connection_established", "false");
+    });
 };
 
 export const getProjectIssues = async (token: string, project_id: string) => {

@@ -8,7 +8,6 @@ class ViewInfo extends React.Component {
   state = {
     token: localStorage.getItem("token") || "",
     project_id: localStorage.getItem("project_id") || "",
-    data: " ",
     issues: null,
     members: [1, 2],
     sorting_members: "number"
@@ -25,15 +24,9 @@ class ViewInfo extends React.Component {
       });
     }
     console.log(this.state.token);
-    this.setState({
-        data: getProject(this.state.token, this.state.project_id)
-    });
 
-    console.log(this.state.data);
-    
 
-    const data: any = getProject(this.state.token, this.state.project_id);
-
+  
     const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
     requestIssues.then((issues:any) => {
         console.log(issues);
