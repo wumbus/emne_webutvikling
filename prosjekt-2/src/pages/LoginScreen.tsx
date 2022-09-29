@@ -1,42 +1,64 @@
 import React, { useEffect } from "react";
-// import TextField from '@mui/material/TextField';
-// import Button from '@mui/material/Button';
 import { getProject } from "../services/api";
 import { render } from "react-dom";
 
 
-class LoginScreen extends React.Component {
+class LoginScreen extends React.Component <{}, {token: any, project_id: any, rememberMe: any}> {
+  constructor(props:any) {
+    super(props)
+    this.state = {
+      token: "",
+      project_id: 0,
+      rememberMe: true
+    }
 
-  state = {
-    token: "",
-    project_id:0,
-    rememberMe: true
+    this.handleChange=this.handleChange.bind(this);
+    this.handleFormSubmit=this.handleFormSubmit.bind(this);
+
   }
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void =>{
-    const input = event.target;
-    const value = input.value;
 
-    this.setState({[input.name]: value});
+  handleChange(event: React.ChangeEvent<HTMLInputElement>){
+    const input = event.target;
+
+    //this.setState({[input.name]:input.value});
+
+    if (input.name === "project_id") {
+      this.setState({project_id: input.value});
+    } else if (input.name === "token") {
+      this.setState({token: input.value});
+    }
   };
 
-  handleFormSubmit = () => {
+  handleFormSubmit() {
+      console.log("Handle form submit 1")
       const {token, project_id} = this.state;
       localStorage.setItem('token', token);
       localStorage.setItem('project_id', project_id.toString());
+      console.log("Handle form submit")
       getProject(token, project_id.toString()).then( message => {
-        // if (message == 200) {
+        console.log(message)
+        // if (message == true) {
 
         // }
       })
- 
+      // try {
+      //   let redirect : any = getProject(token, project_id.toString())
+      //   console.log("Redirect: ", redirect)
+      //   if (redirect) {
 
+      //   }
+        
+      // } catch (error) {
+      //   console.log("Error (:")
+      // }
 
   };
 
   componentDidMount(){
       const token = localStorage.getItem('token');
-      this.setState({token});
+      const project_id = localStorage.getItem('project_id')
+      this.setState({token, project_id});
   }
   
 
