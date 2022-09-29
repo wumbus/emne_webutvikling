@@ -1,12 +1,13 @@
 import React from "react";
 import { ListFormat } from "typescript";
-import { MembersList, MemberItem } from "../components/User"
-import { getProject, getProjectIssues, getMembers } from "../services/api";
+import { CommitsView } from "../components/commits";
+import { MembersList } from "../components/User"
+import { getProject, getProjectIssues, getMembers, getCommits } from "../services/api";
 // import { ProjectType, IssuesType, MembersType } from "../services/api";
 import './css/viewInfo.css';
 
 
-class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any }> {
+class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any, commits:any }> {
     constructor(props: any) {
         super(props);
 
@@ -16,7 +17,8 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
             issues: null,
             members: [1, 2],
             sorting_members: " ",
-            checkboxes: [false, false, false, false]
+            checkboxes: [false, false, false, false],
+            commits: [1,2]
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -94,6 +96,20 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
         }).catch((err: any) => {
             console.log("fakk");
         });
+
+        const requestCommits: any = getCommits(this.state.token);
+        requestCommits.then((commits: any) => {
+            console.log(commits);
+            this.setState({
+                commits: commits
+            });
+
+            console.log(this.state.commits);
+            
+
+        }).catch((err: any) => {
+            console.log("fakk commits");
+        });
     }
 
     render() {
@@ -123,6 +139,7 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
                     </div>
                     <div className="column commits">
                         <p> Her kommer en graf</p>
+                        <CommitsView commits={this.state.commits} xaxis="commiter"/>
                     </div>
                 </div>
             </div>

@@ -21,6 +21,14 @@ export type MembersType = {
     access_level: number
 }
 
+export type CommitsType = {
+    id: string,
+    created_at: string,
+    title: string,
+    message: number,
+    committer_name: string,
+    committer_email: string
+}
 
 // glpat-9CzoD9y7CQx2ujy4Ubmx
 
@@ -40,6 +48,7 @@ export const getProjectIssues = async (token: string) => {
     const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/issues?private_token=${token}`);
     const data: any = await res.json();
     //   var dataParsed = await res.json();
+    console.log(data);
 
     const issuesArray: Array<any>  = [];
 
@@ -50,8 +59,8 @@ export const getProjectIssues = async (token: string) => {
     });
 
 
-    // const { iid, title, assignee } = data;
-    // console.log(iid, title, assignee, data);
+    const { iid, title, assignee } = data;
+    console.log(iid, title, assignee, data);
 
     //   return dataParsed;
     return issuesArray;
@@ -65,17 +74,27 @@ export const getMembers = async (token: string) => {
     const membersArray: Array<any>  = [];
 
     data.forEach((member: MembersType) => {
-        const { username, name, avatar_url, access_level } = member;
+        const { username, name, avatar_url, access_level} = member;
         // console.log(iid, title, assignee["username"]);
         membersArray.push([username, name, avatar_url, access_level.toString()]);
     });
-
-
-    // const { iid, title, assignee } = data;
-    // console.log(iid, title, assignee, data);
-
-    //   return dataParsed;
     return membersArray;
+}
+
+export const getCommits = async (token: string) => {
+    const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/repository/commits?private_token=${token}`);
+    const data: any = await res.json();
+
+    const commitsArray: Array<any>  = [];
+
+    data.forEach((commit: CommitsType) => {
+        const {id, created_at, title, message, committer_name,committer_email} = commit;
+        // console.log(iid, title, assignee["username"]);
+        commitsArray.push([id, created_at, title, message, committer_name,committer_email]);
+    });
+    console.log(commitsArray);
+    
+    return commitsArray;
 }
 
 
