@@ -8,7 +8,7 @@
 
 .column.members {
     /* How much of the width should it take up? a ralative factor */
-    flex: 2;
+    flex: 5;
 }
 
 .column.commits {
