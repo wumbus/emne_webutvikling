@@ -73,15 +73,19 @@ export function MembersList(props: { members: any, sort: any, filterBy: any }) {
 
 
     return (
-        <ul>
+        <table>
+            <th>Avatar</th>
+            <th>Name</th>
+            <th>User name</th>
+            <th>Role</th>
             {members.map((member: any) =>
                 <MemberItem key={member[0]} value={member} />)}
-        </ul>
+        </table>
     );
 }
 
 export function MemberItem(props: any) {
-    return (<li> <img src={props.value[2]} alt="Avatar" />
-        {props.value[1]} ({props.value[0]}) <br /> {title(props.value[3])}</li>);
+    return (<tr> <td><img src={props.value[2]} alt="Avatar" /> </td>
+       <td>{props.value[1]} </td> <td>{props.value[0]} </td> <td>{title(props.value[3])}</td></tr>);
 }
 

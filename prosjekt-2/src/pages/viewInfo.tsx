@@ -103,29 +103,33 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
                 <p>{this.state.token}</p>
                 <div className="row">
                     <div className="column members">
-                        <p>Her kommer liste over members</p>
-                        <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} />
+                        <p className = "memberliste">Liste over members</p>
                         <form>
-                            <label>Sort by:
+                            <table>Sort by:
                                 <select name={this.state.sorting_members} onChange={this.handleChange}>
                                     <option value="number">Role</option>
                                     <option value="name">Name</option>
                                 </select>
-                            </label>
+                            </table>
 
-                            <label>Filter by:
-                                Developer<input type="checkbox" name="sjdkfjsd" id="0" onChange={this.handleCheckboxChange} />
-                                Maintainer<input type="checkbox" name="" id="1" onChange={this.handleCheckboxChange} />
-                                Owner<input type="checkbox" name="" id="2" onChange={this.handleCheckboxChange} />
-                                Bots<input type="checkbox" name="" id="3" onChange={this.handleCheckboxChange} />
-                            </label>
+                            <table>Filter by:
+                                <input type="checkbox"  name="sjdkfjsd" id="check" onChange={this.handleCheckboxChange} />Developer 
+                                <input type="checkbox" name="" id="1" onChange={this.handleCheckboxChange} />Maintainer 
+                                <input type="checkbox" name="" id="2" onChange={this.handleCheckboxChange} />Owner
+                                <input type="checkbox" name="" id="3" onChange={this.handleCheckboxChange} />Bots
+                            </table>
                         </form>
+                        <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} />
+                        
                     </div>
                     <div className="column commits">
-                        <p> Her kommer en graf</p>
+                    <p className="graph"> Her kommer en graf</p> 
+                    <table> graf</table>
                     </div>
                 </div>
             </div>
+
+            
         );
     }
 }
