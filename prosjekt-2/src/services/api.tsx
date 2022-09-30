@@ -114,7 +114,7 @@ export const getBranches = async (token: string) => {
         // console.log(iid, title, assignee["username"]);
         BranchesArray.push(name);
     });
-    console.log(BranchesArray);
+    // console.log(BranchesArray);
     return BranchesArray;
 }
 
@@ -131,7 +131,7 @@ export const getCommitsByBranch = async (token: string, branch_name: string) => 
         // console.log(iid, title, assignee["username"]);
         commitsArray.push([id, created_at, title, message, committer_name, committer_email]);
     });
-    console.log(commitsArray);
+    // console.log(commitsArray);
 
     return commitsArray;
 }
@@ -139,26 +139,28 @@ export const getCommitsByBranch = async (token: string, branch_name: string) => 
 export const getCommitsByAllBranches = async (token: string) => {
     let branches = ["main"];
     let commitsByBranch: any = [];
+    // let commitsByBranch: any = {};
 
     const requestBranches: any = getBranches(token);
     requestBranches.then((bran: Array<string>) => {
-        console.log("Bran:" + bran);
+        // console.log("Bran:" + bran);
         branches = bran;
 
         for (let i = 0; i < branches.length; i++) {
-            console.log("branch: " + branches[i]);
+            // console.log("branch: " + branches[i]);
             const requestCommits: any = getCommitsByBranch(token, branches[i]);
-            requestCommits.then((commit: any) => {
-                commitsByBranch.push(commit);
+            requestCommits.then((commits: any) => {
+                commitsByBranch.push([branches[i], commits]);
+                // commitsByBranch[branches[i]] = commits;
             }).catch((err: any) => {
                 console.log("Problem with getCommitsByBranch");
             });
         }
-        console.log(commitsByBranch);
+        // console.log(commitsByBranch);
     }).catch((err: any) => {
         console.log("Problem with getBranches");
     });
-    console.log(branches);
+    console.log(commitsByBranch);
 
     return commitsByBranch;
 }

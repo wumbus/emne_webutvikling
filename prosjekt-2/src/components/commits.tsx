@@ -10,10 +10,13 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { count } from "console";
+import { getCommitsByBranch } from "../services/api";
 
-export function CommitsView(props: { commits: any, xaxis: any }) {
+export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: any }) {
     const commits = props.commits;
     const xaxis = props.xaxis;
+    const commitsByBranch = props.commitsByBranch;
 
     let barData = {
         labels: ["katt", "hund", "fisk"],
@@ -124,6 +127,53 @@ export function CommitsView(props: { commits: any, xaxis: any }) {
         }
 
     } else if (xaxis == "branches") {
+        try {
+            console.log(commitsByBranch);
+            console.log(commitsByBranch.length)
+            // let countCommits: any = [];
+
+            // let branchNames: any = [];
+            // for (const branchName in commits) {
+            //     branchNames.push(branchName);
+            //     // countCommits.push();
+                
+
+            // }
+            // console.log(branchNames);
+            
+            // Yaxis
+            // let countCommits: any = [];
+            // // Xaxis
+            // let branchNames: any = [];
+            // for (let i = 0; i < commitsByBranch.length; i++) {
+            //     countCommits.push(commitsByBranch[i][2].length);
+            //     console.log("Her " + commitsByBranch[i][2].length);
+
+            //     branchNames.push(commitsByBranch[i][1]);
+            // }
+
+            // console.log(countCommits);
+            // console.log(branchNames);
+
+
+
+            // barData = {
+            //     labels: branchNames,
+            //     datasets: [{
+            //         backgroundColor: "rgba(87, 121, 234, 0.6)",
+            //         data: countCommits
+            //     }]
+            // }
+
+
+        } catch (error) {
+            console.log("Dette funket dårlig");
+            
+        }
+
+
+
+
 
     }
 

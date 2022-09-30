@@ -113,8 +113,11 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
         });
 
         const requestCommitsByAllBranches: any = getCommitsByAllBranches(this.state.token);
-        requestCommitsByAllBranches.then((commits: any) => {
-            console.log(commits);
+        requestCommitsByAllBranches.then((commitsByBranch: any) => {
+            console.log(commitsByBranch);
+            this.setState({
+                commitsByBranch: commitsByBranch
+            });
         }).catch((err: any) => {
             console.log("fakk commits");
         });
@@ -148,7 +151,7 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
                     </div>
                     <div className="column commits">
                         <p> Her kommer en graf</p>
-                        <CommitsView commits={this.state.commits} xaxis="commiter"/>
+                        <CommitsView commits={this.state.commits} commitsByBranch={this.state.commitsByBranch} xaxis="branches"/>
                     </div>
                 </div>
             </div>
