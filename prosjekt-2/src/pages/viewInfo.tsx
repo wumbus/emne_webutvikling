@@ -114,7 +114,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                             </table>
 
                             <table>Filter by:
-                                <input type="checkbox"  name="sjdkfjsd" id="check" onChange={this.handleCheckboxChange} />Developer 
+                                <input type="checkbox" name="" id="0" onChange={this.handleCheckboxChange} />Developer 
                                 <input type="checkbox" name="" id="1" onChange={this.handleCheckboxChange} />Maintainer 
                                 <input type="checkbox" name="" id="2" onChange={this.handleCheckboxChange} />Owner
                                 <input type="checkbox" name="" id="3" onChange={this.handleCheckboxChange} />Bots
