@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginScreen from "./pages/LoginScreen";
-import { getProject } from './services/api';
 import ViewInfo from "./pages/viewInfo";
 
 

@@ -1,58 +1,70 @@
-import React, { useEffect } from "react";
-// import TextField from '@mui/material/TextField';
-// import Button from '@mui/material/Button';
+import React, { FC, useState, useEffect } from "react";
 import { getProject } from "../services/api";
-import { render } from "react-dom";
+import { useNavigate } from "react-router-dom";
 
-
-class LoginScreen extends React.Component {
-
-  state = {
+type LoginScreenType = {
+  token: string;
+  project_id: number;
+  rememberMe: boolean;
+}
+const LoginScreen: FC = () => {
+  const [state, setState] = useState<LoginScreenType>({
     token: "",
-    project_id:0,
-    rememberMe: false
-  }
+    project_id: 0,
+    rememberMe: true,
+  });
+  const navigate = useNavigate();
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void =>{
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target;
-    const value = input.type === 'checkbox' ? input.checked : input.value;
 
-    this.setState({[input.name]: value});
-  };
-
-  handleFormSubmit = () => {
-      const {token, rememberMe} = this.state;
-      localStorage.setItem('rememberMe', rememberMe.toString());
-      localStorage.setItem('token', rememberMe ? token : '');
-      getProject(token);
-  };
-
-  componentDidMount(){
-      const rememberMe = localStorage.getItem('rememberMe') === 'true';
-      const token = rememberMe ? localStorage.getItem('token') : '';
-      this.setState({token, rememberMe});
+    if (input.name === "project_id") {
+      setState((state) => {return { ...state, project_id: Number(input.value) }});
+    } else if (input.name === "token") {
+      setState((state) => {return { ...state, token: input.value }});
+    }
   }
+
+  const handleFormSubmit = async (event: any) => {
+    event.preventDefault();
+    const { token, project_id } = state;
+    localStorage.setItem("token", token);
+    localStorage.setItem("project_id", project_id.toString());
+    
+    const res = await getProject(token, project_id.toString()) //endre getProject til getResponse ?
+    if (res) navigate("/viewInfo", {replace: true})
+    console.log(res);
+  }
+
+  useEffect(() => {
+    const token = localStorage.getItem("token") || "";
+    const project_id = Number(localStorage.getItem("project_id")) || 0;
+    setState((state) => {return { ...state, token: token, project_id: project_id }});
+  }, []);
   
-
-  render()  {
-    return (
-        <form onSubmit={this.handleFormSubmit}>
-            <label>
-                Project ID: <input name="project_id" value ={this.state.project_id} onChange={this.handleChange}></input>
-            </label>
-            <br/>
-            <label>
-                Access Token: <input name = "token" value={this.state.token} onChange={this.handleChange}/>
-            </label>
-            <br/>
-            <label>
-                <input name= "rememberMe" checked={this.state.rememberMe} onChange={this.handleChange} type="checkbox"/> Remember Me
-            </label>
-            <button type = "submit">Submit</button>
-        </form>
-    );
-
-};
-};
+  return (
+    <form onSubmit={handleFormSubmit}>
+      <label>
+        Project ID:{" "}
+        <input
+          name="project_id"
+          value={state.project_id}
+          onChange={handleChange}
+        ></input>
+      </label>
+      <br />
+      <label>
+        Access Token:{" "}
+        <input
+          name="token"
+          value={state.token}
+          onChange={handleChange}
+        />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
 
 export default LoginScreen;
