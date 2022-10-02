@@ -11,8 +11,8 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         super(props);
 
         this.state = {
-            token: localStorage.getItem("token") || "",
-            project_id: localStorage.getItem("project_id")||0,
+            token: sessionStorage.getItem("token") || "",
+            project_id: sessionStorage.getItem("project_id")||0,
             data: " ",
             issues: null,
             members: [1, 2],
@@ -50,18 +50,20 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             checkboxes
         });
 
+        localStorage.setItem("checkboxes", checkboxes);
+
         console.log(this.state.checkboxes);
     }
 
 
     componentDidMount() {
-        if (localStorage.getItem("token") == null) {
+        if (sessionStorage.getItem("token") == null) {
             this.setState({
-                token: "ops",
+                token: "",
             });
         } else {
             this.setState({
-                token: localStorage.getItem("token"),
+                token: sessionStorage.getItem("token"),
             });
         }
         console.log(this.state.token);

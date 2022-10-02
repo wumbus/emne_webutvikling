@@ -28,8 +28,8 @@ const LoginScreen: FC = () => {
   const handleFormSubmit = async (event: any) => {
     event.preventDefault();
     const { token, project_id } = state;
-    localStorage.setItem("token", token);
-    localStorage.setItem("project_id", project_id.toString());
+    sessionStorage.setItem("token", token);
+    sessionStorage.setItem("project_id", project_id.toString());
     
     const res = await getProject(token, project_id.toString()) //endre getProject til getResponse ?
     if (res) navigate("/viewInfo", {replace: true})
@@ -37,8 +37,8 @@ const LoginScreen: FC = () => {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("token") || "";
-    const project_id = Number(localStorage.getItem("project_id")) || 0;
+    const token = sessionStorage.getItem("token") || "";
+    const project_id = Number(sessionStorage.getItem("project_id")) || 0;
     setState((state) => {return { ...state, token: token, project_id: project_id }});
   }, []);
   
