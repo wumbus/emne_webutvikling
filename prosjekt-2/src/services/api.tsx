@@ -21,8 +21,12 @@ export type MembersType = {
   avatar_url: string;
   access_level: number;
 };
+// Projext id
+// 17464
 
-// glpat-9CzoD9y7CQx2ujy4Ubmx
+// Acces tokens
+// glpat-9CzoD9y7CQx2ujy4Ubmx Cecilie
+// glpat-wsMyuXMF-aYEBu9rXcED Jimmy
 
 // export const getProject = async (token: string, project_id: string) => {
 //     const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}?private_token=${token}`);

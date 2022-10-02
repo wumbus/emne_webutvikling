@@ -3,7 +3,8 @@ import { ListFormat } from "typescript";
 import { MembersList, MemberItem } from "../components/User"
 import { getProject, getProjectIssues, getMembers } from "../services/api";
 // import { ProjectType, IssuesType, MembersType } from "../services/api";
-import './css/viewInfo.css';
+import styles from './css/viewInfo.module.css';
+
 
 
 class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any }> {
@@ -99,11 +100,11 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
     render() {
         return (
-            <div>
+            <main className={styles.viewInfo}>
                 <h1>Hi</h1>
                 <p>{this.state.token}</p>
-                <div className="row">
-                    <div className="column members">
+                <div className={styles.row}>
+                    <div className={`${styles.columns} ${styles.members}`}>
                         <p className = "memberliste">Liste over members</p>
                         <form>
                             <table>Sort by:
@@ -128,7 +129,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                     <table> graf</table>
                     </div>
                 </div>
-            </div>
+            </main>
 
             
         );
