@@ -17,15 +17,32 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             issues: null,
             members: [1, 2],
             sorting_members: " ",
-            checkboxes: [false, false, false, false]
+            checkboxes: this.getCheckboxes(localStorage.getItem("checkboxes"))
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+        this.getCheckboxes = this.getCheckboxes.bind(this);
 
     }
 
-
+    getCheckboxes(checkbox: any) {
+        if (checkbox == null) {
+            return [];
+        } else {
+            let checkbox_list_string = checkbox.split(",");
+            let checkbox_list: any = [];
+            checkbox_list_string.forEach((element : string) => {
+                if (element === "true"){
+                    checkbox_list.push(true);
+                } else if (element === "false") {
+                    checkbox_list.push(false);
+                }
+            });
+            console.log(checkbox_list);
+            return checkbox_list;
+        }
+    }
 
     handleChange(event: any) {
         console.log("Jeg endres");
@@ -57,6 +74,8 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
 
     componentDidMount() {
+        console.log("Component Did MOunt");
+        
         if (sessionStorage.getItem("token") == null) {
             this.setState({
                 token: "",
@@ -66,15 +85,21 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                 token: sessionStorage.getItem("token"),
             });
         }
+
+        if (localStorage.getItem("checkboxes") == null) {
+            this.setState({
+                checkboxes : []
+            })
+        } else {
+            this.setState({
+                checkboxes: this.getCheckboxes(localStorage.getItem("checkboxes"))
+            })
+        }
+
         console.log(this.state.token);
         this.setState({
             data: getProject(this.state.token,this.state.project_id)
         });
-
-        console.log(this.state.data);
-
-
-        const data: any = getProject(this.state.token,this.state.project_id);
 
         const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
         requestIssues.then((issues: any) => {
@@ -87,6 +112,8 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             console.log("fakk");
         });
 
+        console.log("Requesting members");
+        
         const requestMembers: any = getMembers(this.state.token,this.state.project_id);
         requestMembers.then((members: any) => {
             console.log(members);
@@ -116,10 +143,10 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                             </table>
 
                             <table>Filter by:
-                                <input type="checkbox" name="" id="0" onChange={this.handleCheckboxChange} />Developer 
-                                <input type="checkbox" name="" id="1" onChange={this.handleCheckboxChange} />Maintainer 
-                                <input type="checkbox" name="" id="2" onChange={this.handleCheckboxChange} />Owner
-                                <input type="checkbox" name="" id="3" onChange={this.handleCheckboxChange} />Bots
+                                <input type="checkbox" name="" id="0" checked={this.state.checkboxes[0]} onChange={this.handleCheckboxChange} />Developer 
+                                <input type="checkbox" name="" id="1" checked={this.state.checkboxes[1]} onChange={this.handleCheckboxChange} />Maintainer 
+                                <input type="checkbox" name="" id="2" checked={this.state.checkboxes[2]} onChange={this.handleCheckboxChange} />Owner
+                                <input type="checkbox" name="" id="3" checked={this.state.checkboxes[3]} onChange={this.handleCheckboxChange} />Bots
                             </table>
                         </form>
                         <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} />
