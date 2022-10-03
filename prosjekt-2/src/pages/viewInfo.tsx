@@ -7,7 +7,7 @@ import { getProject, getProjectIssues, getMembers, getCommits, getCommitsByAllBr
 import './css/viewInfo.css';
 
 
-class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any, commits:any, commitsByBranch:any, branches:any, xaxis:any }> {
+class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any, members: string[][], sorting_members: string, checkboxes: any, commits: any, commitsByBranch: any, xaxis: any }> {
     constructor(props: any) {
         super(props);
 
@@ -15,32 +15,25 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
             token: localStorage.getItem("token") || "",
             data: " ",
             issues: null,
-            members: [1, 2],
+            members: [],
             sorting_members: " ",
             checkboxes: [false, false, false, false],
-            commits: [1,2],
-            commitsByBranch: [1,2], 
-            branches: [1,2],
+            commits: [],
+            commitsByBranch: [],
             xaxis: "person"
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeGraph = this.handleChangeGraph.bind(this);
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
-
     }
 
 
 
     handleChange(event: any) {
-        // console.log("Jeg endres");
-        // console.log(event.target.value);
-
         this.setState({
             sorting_members: event.target.value
         });
-        // console.log(this.state.sorting_members);
-        // window.location.reload();
     }
 
     handleChangeGraph(event: any) {
@@ -50,8 +43,6 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
     }
 
     handleCheckboxChange(event: any) {
-        // console.log(event.target.checked);
-        // console.log(event.target.id);
         const id = parseInt(event.target.id);
 
         let checkboxes = this.state.checkboxes;
@@ -60,8 +51,6 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
         this.setState({
             checkboxes
         });
-
-        // console.log(this.state.checkboxes);
     }
 
 
@@ -85,51 +74,38 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
 
         const data: any = getProject(this.state.token);
 
-        const requestIssues: any = getProjectIssues(this.state.token);
-        requestIssues.then((issues: any) => {
-            // console.log(issues);
-            this.setState({
-                issues: issues
-            });
+        // const requestIssues: any = getProjectIssues(this.state.token);
+        // requestIssues.then((issues: any) => {
+        //     // console.log(issues);
+        //     this.setState({
+        //         issues: issues
+        //     });
 
-        }).catch((err: any) => {
-            console.log("fakk issues");
-        });
+        // }).catch((err: any) => {
+        //     console.log("fakk issues");
+        // });
 
         const requestMembers: any = getMembers(this.state.token);
-        requestMembers.then((members: any) => {
-            // console.log(members);
+        console.log(requestMembers);
+        
+        requestMembers.then((members: string[][]) => {
             this.setState({
                 members: members
             });
+            console.log(members);
+            
 
         }).catch((err: any) => {
-            console.log("fakk");
+            console.log("Failed Request (getMembers)");
         });
 
         const requestCommits: any = getCommits(this.state.token);
         requestCommits.then((commits: any) => {
-            // console.log(commits);
             this.setState({
                 commits: commits
             });
-
-            console.log(this.state.commits);
-            
-
         }).catch((err: any) => {
-            console.log("fakk commits");
-        });
-
-        const requestBranches: any = getBranches(this.state.token);
-        requestBranches.then((branches: any) => {
-            // console.log(commits);
-            this.setState({
-                branches: branches
-            });
-
-        }).catch((err: any) => {
-            console.log("fakk Branches");
+            console.log("Failed Request (getCommits)");
         });
 
         const requestCommitsByAllBranches: any = getCommitsByAllBranches(this.state.token);
@@ -139,21 +115,8 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
                 commitsByBranch: commitsByBranch
             });
         }).catch((err: any) => {
-            console.log("fakk all commits");
+            console.log("Failed Request (getCommitsByAllBranches)");
         });
-
-        // const requestNumberOfCommitsByAllBranches: any = getNumberOfCommitsByAllBranches(this.state.token);
-        // requestNumberOfCommitsByAllBranches.then((commitsByBranch: any) => {
-        //     console.log(commitsByBranch);
-        //     this.setState({
-        //         commitsByBranch: commitsByBranch
-        //     });
-        // }).catch((err: any) => {
-        //     console.log("fakk all number commits");
-        // });
-
-
-
     }
 
     render() {
@@ -182,14 +145,13 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
                         </form>
                     </div>
                     <div className="column commits">
-                        <p> Her kommer en graf</p>
                         <label>Show graph:
-                                <select name={this.state.xaxis} onChange={this.handleChangeGraph}>
-                                    <option value="person">Commits per person</option>
-                                    <option value="branch">Commits per branch</option>
-                                </select>
-                            </label>
-                        <CommitsView commits={this.state.commits} commitsByBranch={this.state.commitsByBranch} xaxis={this.state.xaxis}/>
+                            <select name={this.state.xaxis} onChange={this.handleChangeGraph}>
+                                <option value="person">Commits per person</option>
+                                <option value="branch">Commits per branch</option>
+                            </select>
+                        </label>
+                        <CommitsView commits={this.state.commits} commitsByBranch={this.state.commitsByBranch} xaxis={this.state.xaxis} />
                     </div>
                 </div>
             </div>

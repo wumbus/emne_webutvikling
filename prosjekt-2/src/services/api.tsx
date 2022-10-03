@@ -104,27 +104,6 @@ export const getCommits = async (token: string) => {
 
 
 export const getBranches = async (token: string) => {
-    // await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/repository/branches?private_token=${token}`)
-    // .then((res) => {
-
-    //     let data: any = res.json();
-
-    //     const BranchesArray: Array<any> = [];
-
-    //     data.forEach((branch: BranchesType) => {
-    //         const { name } = branch
-    //         // console.log(iid, title, assignee["username"]);
-    //         BranchesArray.push(name);
-    //     });
-    //     // console.log(BranchesArray);
-    //     return BranchesArray;
-    // }).catch((err) => {
-    //     console.log("Dette nye greia funker ikke");
-        
-    // });
-
-
-
     const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/repository/branches?private_token=${token}`);
     const data: any = await res.json();
 
@@ -140,7 +119,7 @@ export const getBranches = async (token: string) => {
 }
 
 export const getCommitsByBranch = async (token: string, branch_name: string) => {
-    console.log("Branch_name:" + branch_name);
+    // console.log("Branch_name:" + branch_name);
     
     const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/repository/commits?per_page=100&ref_name=${branch_name}&private_token=${token}`);
     const data: any = await res.json();
@@ -181,7 +160,7 @@ export const getCommitsByAllBranches = async (token: string) => {
     }).catch((err: any) => {
         console.log("Problem with getBranches");
     });
-    console.log(commitsByBranch);
+    // console.log(commitsByBranch);
 
     return commitsByBranch;
 }
@@ -210,7 +189,7 @@ export const getNumberOfCommitsByAllBranches = async (token: string) => {
     }).catch((err: any) => {
         console.log("Problem with getBranches");
     });
-    console.log(commitsByBranch);
+    // console.log(commitsByBranch);
 
     return commitsByBranch;
 }
