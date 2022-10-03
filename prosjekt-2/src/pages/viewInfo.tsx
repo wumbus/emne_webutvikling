@@ -1,11 +1,11 @@
 import React from "react";
-import { ListFormat } from "typescript";
-import { MembersList, MemberItem } from "../components/User"
+import { MembersList } from "../components/User"
 import { getProject, getProjectIssues, getMembers } from "../services/api";
-// import { ProjectType, IssuesType, MembersType } from "../services/api";
 import './css/viewInfo.css';
 
-
+/**
+ * viewInfo displays all the information we gather from the project in a readable manner.
+ */
 class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any }> {
     constructor(props: any) {
         super(props);
@@ -26,6 +26,12 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
     }
 
+    /**
+     * Helper function that converts the checkbox string that is stored in localStorage to an array of boolean values.
+     * 
+     * @param checkbox  The string of the boolean values separated by commas
+     * @returns     An array of boolean values
+     */
     getCheckboxes(checkbox: any) {
         if (checkbox == null) {
             return [];
@@ -44,6 +50,12 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         }
     }
 
+    /**
+     * Helper function that allows the selected parameter in each option of the select to be decided based on what is stored in localStorage.
+     * 
+     * @param value     The option's name
+     * @returns     True if the option should be the selected option
+     */
     selectedSort(value: string) {
         if (this.state.sorting_members == value) {
             return true;
@@ -53,22 +65,25 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
     }
 
+    /**
+     * On change, it updates the selected way of sorting.
+     * 
+     * @param event     Select is changed
+     */
     handleChange(event: any) {
-        console.log("Jeg endres");
-        console.log(event.target.value);
-
         this.setState({
             sorting_members: event.target.value
         });
 
         localStorage.setItem("sort", event.target.value);
-        console.log(this.state.sorting_members);
-        // window.location.reload();
     }
 
+    /**
+     * On change, the boolean values for checkboxes are updated.
+     * 
+     * @param event     A checkbox is checked or unchecked
+     */
     handleCheckboxChange(event: any) {
-        console.log(event.target.checked);
-        console.log(event.target.id);
         const id = parseInt(event.target.id);
 
         let checkboxes = this.state.checkboxes;
@@ -79,13 +94,12 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         });
 
         localStorage.setItem("checkboxes", checkboxes);
-
-        console.log(this.state.checkboxes);
     }
 
-
+    /**
+     * Gets the values stored in local and session storage and updates the state.
+     */
     componentDidMount() {
-        console.log("Component Did MOunt");
         
         if (sessionStorage.getItem("token") == null) {
             this.setState({
@@ -107,9 +121,8 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             })
         }
 
-        console.log(this.state.token);
         this.setState({
-            data: getProject(this.state.token,this.state.project_id)
+            data: getProject(this.state.token,this.state.project_id) // Should be removed right?
         });
 
         const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
@@ -122,8 +135,6 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         }).catch((err: any) => {
             console.log("fakk");
         });
-
-        console.log("Requesting members");
         
         const requestMembers: any = getMembers(this.state.token,this.state.project_id);
         requestMembers.then((members: any) => {
@@ -152,7 +163,6 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                                     <option value="name" selected={this.selectedSort("name")}>Name</option>
                                 </select>
                             </table>
-
                             <table>Filter by:
                                 <input type="checkbox" name="" id="0" checked={this.state.checkboxes[0]} onChange={this.handleCheckboxChange} />Developer 
                                 <input type="checkbox" name="" id="1" checked={this.state.checkboxes[1]} onChange={this.handleCheckboxChange} />Maintainer 
@@ -161,7 +171,6 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                             </table>
                         </form>
                         <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} />
-                        
                     </div>
                     <div className="column commits">
                     <p className="graph"> Her kommer en graf</p> 

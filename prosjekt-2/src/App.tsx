@@ -1,10 +1,7 @@
-import React, { useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginScreen from "./pages/LoginScreen";
 import ViewInfo from "./pages/viewInfo";
-
-
 
 function App() {
 
