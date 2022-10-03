@@ -1,13 +1,12 @@
 import React from "react";
 import { ListFormat } from "typescript";
-import { MembersList, MemberItem } from "../components/User"
-import { getProject, getProjectIssues, getMembers } from "../services/api";
-// import { ProjectType, IssuesType, MembersType } from "../services/api";
+import { MembersList } from "../components/User"
+import { getProject, getProjectIssues, getMembers, getCommits, getCommitsByAllBranches, getNumberOfCommitsByAllBranches, getBranches } from "../services/api";
 import styles from './css/viewInfo.module.css';
 
 
 
-class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any }> {
+class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: any, issues: any, members: string[][], sorting_members: string, checkboxes: any, commits: any, commitsByBranch: any, xaxis: any }> {
     constructor(props: any) {
         super(props);
 
@@ -16,32 +15,31 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             project_id: localStorage.getItem("project_id")||0,
             data: " ",
             issues: null,
-            members: [1, 2],
+            members: [],
             sorting_members: " ",
-            checkboxes: [false, false, false, false]
+            checkboxes: [false, false, false, false],
+            commits: [],
+            commitsByBranch: [],
+            xaxis: "person"
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangeGraph = this.handleChangeGraph.bind(this);
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
-
     }
 
-
-
     handleChange(event: any) {
-        console.log("Jeg endres");
-        console.log(event.target.value);
-
         this.setState({
             sorting_members: event.target.value
         });
-        console.log(this.state.sorting_members);
-        // window.location.reload();
+    }
+    handleChangeGraph(event: any) {
+        this.setState({
+            xaxis: event.target.value
+        });
     }
 
     handleCheckboxChange(event: any) {
-        console.log(event.target.checked);
-        console.log(event.target.id);
         const id = parseInt(event.target.id);
 
         let checkboxes = this.state.checkboxes;
@@ -50,10 +48,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         this.setState({
             checkboxes
         });
-
-        console.log(this.state.checkboxes);
     }
-
 
     componentDidMount() {
         if (localStorage.getItem("token") == null) {
@@ -65,17 +60,16 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                 token: localStorage.getItem("token"),
             });
         }
-        console.log(this.state.token);
+        //console.log(this.state.token);
         this.setState({
             data: getProject(this.state.token,this.state.project_id)
         });
 
-        console.log(this.state.data);
+        //console.log(this.state.data);
 
+        const data: any = getProject(this.state.token,this.state.project_id); // <-- blir ikke brukt ?
 
-        const data: any = getProject(this.state.token,this.state.project_id);
-
-        const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
+        /* const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
         requestIssues.then((issues: any) => {
             console.log(issues);
             this.setState({
@@ -83,19 +77,43 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             });
 
         }).catch((err: any) => {
-            console.log("fakk");
+            console.log("fakk issues");
         });
+        */
 
-        const requestMembers: any = getMembers(this.state.token,this.state.project_id);
-        requestMembers.then((members: any) => {
-            console.log(members);
+       const requestMembers: any = getMembers(this.state.token,this.state.project_id);
+        console.log(requestMembers);
+        
+        requestMembers.then((members: string[][]) => {
             this.setState({
                 members: members
             });
+            console.log(members);
+            
 
         }).catch((err: any) => {
-            console.log("fakk");
+            console.log("Failed Request (getMembers)");
         });
+
+        const requestCommits: any = getCommits(this.state.token,this.state.project_id);
+        requestCommits.then((commits: any) => {
+            this.setState({
+                commits: commits
+            });
+        }).catch((err: any) => {
+            console.log("Failed Request (getCommits)");
+        });
+
+        const requestCommitsByAllBranches: any = getCommitsByAllBranches(this.state.token,this.state.project_id);
+        requestCommitsByAllBranches.then((commitsByBranch: any) => {
+            console.log(commitsByBranch);
+            this.setState({
+                commitsByBranch: commitsByBranch
+            });
+        }).catch((err: any) => {
+            console.log("Failed Request (getCommitsByAllBranches)");
+        });
+
     }
 
     render() {

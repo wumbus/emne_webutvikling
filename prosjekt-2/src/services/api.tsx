@@ -21,6 +21,20 @@ export type MembersType = {
   avatar_url: string;
   access_level: number;
 };
+
+export type CommitsType = {
+  id: string,
+  created_at: string,
+  title: string,
+  message: number,
+  committer_name: string,
+  committer_email: string
+}
+
+export type BranchesType = {
+  name: string
+}
+
 // Projext id
 // 17464
 
@@ -85,3 +99,112 @@ export const getMembers = async (token: string, project_id: string) => {
   });
   return membersArray;
 };
+
+export const getCommits = async (token: string, project_id: string) => {
+  const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/repository/commits?per_page=100&private_token=${token}`);
+  const data: any = await res.json();
+
+  const commitsArray: Array<any> = [];
+
+  data.forEach((commit: CommitsType) => {
+      const { id, created_at, title, message, committer_name, committer_email } = commit;
+      // console.log(iid, title, assignee["username"]);
+      commitsArray.push([id, created_at, title, message, committer_name, committer_email]);
+  });
+  // console.log(commitsArray);
+
+  return commitsArray;
+}
+
+
+export const getBranches = async (token: string, project_id: string) => {
+  const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/repository/branches?private_token=${token}`);
+  const data: any = await res.json();
+
+  const BranchesArray: Array<any> = [];
+
+  data.forEach((branch: BranchesType) => {
+      const { name } = branch
+      // console.log(iid, title, assignee["username"]);
+      BranchesArray.push(name);
+  });
+  // console.log(BranchesArray);
+  return BranchesArray;
+}
+
+export const getCommitsByBranch = async (token: string, project_id: string, branch_name: string) => {
+  // console.log("Branch_name:" + branch_name);
+  
+  const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/repository/commits?per_page=100&ref_name=${branch_name}&private_token=${token}`);
+  const data: any = await res.json();
+
+  const commitsArray: Array<any> = [];
+
+  data.forEach((commit: CommitsType) => {
+      const { id, created_at, title, message, committer_name, committer_email } = commit;
+      // console.log(iid, title, assignee["username"]);
+      commitsArray.push([id, created_at, title, message, committer_name, committer_email]);
+  });
+  // console.log(commitsArray);
+
+  return commitsArray;
+}
+
+export const getCommitsByAllBranches = async (token: string, project_id: string) => {
+  let branches = ["main"];
+  let commitsByBranch: any = [];
+  // let commitsByBranch: any = {};
+
+  const requestBranches: any = getBranches(token,project_id);
+  requestBranches.then((bran: Array<string>) => {
+      // console.log("Bran:" + bran);
+      branches = bran;
+
+      for (let i = 0; i < branches.length; i++) {
+          // console.log("branch: " + branches[i]);
+          const requestCommits: any = getCommitsByBranch(token,project_id, branches[i]);
+          requestCommits.then((commits: any) => {
+              commitsByBranch.push([branches[i], commits]);
+              // commitsByBranch[branches[i]] = commits;
+          }).catch((err: any) => {
+              console.log("Problem with getCommitsByBranch");
+          });
+      }
+      // console.log(commitsByBranch);
+  }).catch((err: any) => {
+      console.log("Problem with getBranches");
+  });
+  // console.log(commitsByBranch);
+
+  return commitsByBranch;
+}
+
+export const getNumberOfCommitsByAllBranches = async (token: string, project_id: string) => {
+  let branches = ["main"];
+  let commitsByBranch: Array<any> = [];
+  // let commitsByBranch: any = {};
+
+  const requestBranches: any = getBranches(token,project_id);
+  requestBranches.then((bran: any) => {
+      // console.log("Bran:" + bran);
+      branches = bran;
+
+      for (let i = 0; i < branches.length; i++) {
+          // console.log("branch: " + branches[i]);
+          const requestCommits: any = getCommitsByBranch(token, project_id, branches[i]);
+          requestCommits.then((commits: any) => {
+              commitsByBranch.push(commits.length);
+              // commitsByBranch[branches[i]] = commits;
+          }).catch((err: any) => {
+              console.log("Problem with getCommitsByBranch");
+          });
+      }
+      // console.log(commitsByBranch);
+  }).catch((err: any) => {
+      console.log("Problem with getBranches");
+  });
+  // console.log(commitsByBranch);
+
+  return commitsByBranch;
+}
+
