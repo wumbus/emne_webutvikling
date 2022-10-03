@@ -2,12 +2,12 @@ import React from "react";
 import { ListFormat } from "typescript";
 import { CommitsView } from "../components/commits";
 import { MembersList } from "../components/User"
-import { getProject, getProjectIssues, getMembers, getCommits, getCommitsByAllBranches } from "../services/api";
+import { getProject, getProjectIssues, getMembers, getCommits, getCommitsByAllBranches, getNumberOfCommitsByAllBranches, getBranches } from "../services/api";
 // import { ProjectType, IssuesType, MembersType } from "../services/api";
 import './css/viewInfo.css';
 
 
-class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any, commits:any, commitsByBranch:any }> {
+class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any, commits:any, commitsByBranch:any, branches:any, xaxis:any }> {
     constructor(props: any) {
         super(props);
 
@@ -19,10 +19,13 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
             sorting_members: " ",
             checkboxes: [false, false, false, false],
             commits: [1,2],
-            commitsByBranch: [1,2]
+            commitsByBranch: [1,2], 
+            branches: [1,2],
+            xaxis: "person"
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangeGraph = this.handleChangeGraph.bind(this);
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
 
     }
@@ -38,6 +41,12 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
         });
         // console.log(this.state.sorting_members);
         // window.location.reload();
+    }
+
+    handleChangeGraph(event: any) {
+        this.setState({
+            xaxis: event.target.value
+        });
     }
 
     handleCheckboxChange(event: any) {
@@ -84,7 +93,7 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
             });
 
         }).catch((err: any) => {
-            console.log("fakk");
+            console.log("fakk issues");
         });
 
         const requestMembers: any = getMembers(this.state.token);
@@ -112,6 +121,17 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
             console.log("fakk commits");
         });
 
+        const requestBranches: any = getBranches(this.state.token);
+        requestBranches.then((branches: any) => {
+            // console.log(commits);
+            this.setState({
+                branches: branches
+            });
+
+        }).catch((err: any) => {
+            console.log("fakk Branches");
+        });
+
         const requestCommitsByAllBranches: any = getCommitsByAllBranches(this.state.token);
         requestCommitsByAllBranches.then((commitsByBranch: any) => {
             console.log(commitsByBranch);
@@ -119,8 +139,20 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
                 commitsByBranch: commitsByBranch
             });
         }).catch((err: any) => {
-            console.log("fakk commits");
+            console.log("fakk all commits");
         });
+
+        // const requestNumberOfCommitsByAllBranches: any = getNumberOfCommitsByAllBranches(this.state.token);
+        // requestNumberOfCommitsByAllBranches.then((commitsByBranch: any) => {
+        //     console.log(commitsByBranch);
+        //     this.setState({
+        //         commitsByBranch: commitsByBranch
+        //     });
+        // }).catch((err: any) => {
+        //     console.log("fakk all number commits");
+        // });
+
+
 
     }
 
@@ -151,7 +183,13 @@ class ViewInfo extends React.Component<{}, { token: any, data: any, issues: any,
                     </div>
                     <div className="column commits">
                         <p> Her kommer en graf</p>
-                        <CommitsView commits={this.state.commits} commitsByBranch={this.state.commitsByBranch} xaxis="branches"/>
+                        <label>Show graph:
+                                <select name={this.state.xaxis} onChange={this.handleChangeGraph}>
+                                    <option value="person">Commits per person</option>
+                                    <option value="branch">Commits per branch</option>
+                                </select>
+                            </label>
+                        <CommitsView commits={this.state.commits} commitsByBranch={this.state.commitsByBranch} xaxis={this.state.xaxis}/>
                     </div>
                 </div>
             </div>

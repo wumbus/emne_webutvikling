@@ -87,7 +87,7 @@ export const getMembers = async (token: string) => {
 }
 
 export const getCommits = async (token: string) => {
-    const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/repository/commits?private_token=${token}`);
+    const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/repository/commits?per_page=100&private_token=${token}`);
     const data: any = await res.json();
 
     const commitsArray: Array<any> = [];
@@ -104,6 +104,27 @@ export const getCommits = async (token: string) => {
 
 
 export const getBranches = async (token: string) => {
+    // await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/repository/branches?private_token=${token}`)
+    // .then((res) => {
+
+    //     let data: any = res.json();
+
+    //     const BranchesArray: Array<any> = [];
+
+    //     data.forEach((branch: BranchesType) => {
+    //         const { name } = branch
+    //         // console.log(iid, title, assignee["username"]);
+    //         BranchesArray.push(name);
+    //     });
+    //     // console.log(BranchesArray);
+    //     return BranchesArray;
+    // }).catch((err) => {
+    //     console.log("Dette nye greia funker ikke");
+        
+    // });
+
+
+
     const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/repository/branches?private_token=${token}`);
     const data: any = await res.json();
 
@@ -121,7 +142,7 @@ export const getBranches = async (token: string) => {
 export const getCommitsByBranch = async (token: string, branch_name: string) => {
     console.log("Branch_name:" + branch_name);
     
-    const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/repository/commits?ref_name=${branch_name}&private_token=${token}`);
+    const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/17464/repository/commits?per_page=100&ref_name=${branch_name}&private_token=${token}`);
     const data: any = await res.json();
 
     const commitsArray: Array<any> = [];
@@ -165,6 +186,34 @@ export const getCommitsByAllBranches = async (token: string) => {
     return commitsByBranch;
 }
 
+export const getNumberOfCommitsByAllBranches = async (token: string) => {
+    let branches = ["main"];
+    let commitsByBranch: Array<any> = [];
+    // let commitsByBranch: any = {};
+
+    const requestBranches: any = getBranches(token);
+    requestBranches.then((bran: any) => {
+        // console.log("Bran:" + bran);
+        branches = bran;
+
+        for (let i = 0; i < branches.length; i++) {
+            // console.log("branch: " + branches[i]);
+            const requestCommits: any = getCommitsByBranch(token, branches[i]);
+            requestCommits.then((commits: any) => {
+                commitsByBranch.push(commits.length);
+                // commitsByBranch[branches[i]] = commits;
+            }).catch((err: any) => {
+                console.log("Problem with getCommitsByBranch");
+            });
+        }
+        // console.log(commitsByBranch);
+    }).catch((err: any) => {
+        console.log("Problem with getBranches");
+    });
+    console.log(commitsByBranch);
+
+    return commitsByBranch;
+}
 
 
 

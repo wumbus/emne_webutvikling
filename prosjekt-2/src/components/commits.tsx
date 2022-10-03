@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // npm i react-chartjs-2 chart.js
 import {
     Chart as ChartJS,
@@ -10,14 +10,28 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { count } from "console";
-import { getCommitsByBranch } from "../services/api";
 
-export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: any }) {
+
+//create your forceUpdate hook
+export function useForceUpdate(){
+    const [value, setValue] = useState(0); // integer state
+    return () => setValue(value => value + 1); // update state to force render
+    // An function that increment 👆🏻 the previous state like here 
+    // is better than directly setting `value + 1`
+}
+
+
+export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: any}) {
+
     const commits = props.commits;
     const xaxis = props.xaxis;
+    console.log("xaxis: " + xaxis);
+    
     const commitsByBranch = props.commitsByBranch;
+    // const branches = props.branches;
 
+    console.log(commits);
+    // default dataset
     let barData = {
         labels: ["katt", "hund", "fisk"],
         datasets: [{
@@ -26,14 +40,15 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
         }]
     };
 
-    if (xaxis == "commiter") {
+    if (xaxis == "person") {
         // find all comitters
         let committers: any = [];
         commits.forEach((commit: any) => {
             committers.push(commit[5]);
         });
         const uniqueCommitters: any = new Set(committers)
-        // console.log(uniqueCommitters);
+
+        console.log(uniqueCommitters);
 
         let countCommits: any = [];
         for (const email of uniqueCommitters) {
@@ -126,54 +141,36 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
             }
         }
 
-    } else if (xaxis == "branches") {
+    } else if (xaxis == "branch") {
         try {
             console.log(commitsByBranch);
-            console.log(commitsByBranch.length)
-            // let countCommits: any = [];
-
-            // let branchNames: any = [];
-            // for (const branchName in commits) {
-            //     branchNames.push(branchName);
-            //     // countCommits.push();
-                
-
-            // }
-            // console.log(branchNames);
+            console.log(commitsByBranch.length); 
             
-            // Yaxis
-            // let countCommits: any = [];
-            // // Xaxis
-            // let branchNames: any = [];
-            // for (let i = 0; i < commitsByBranch.length; i++) {
-            //     countCommits.push(commitsByBranch[i][2].length);
-            //     console.log("Her " + commitsByBranch[i][2].length);
+            console.log(Array.isArray(commitsByBranch));
+            console.log(commitsByBranch.length); 
 
-            //     branchNames.push(commitsByBranch[i][1]);
-            // }
+            let countCommits: any = [];
+            let branchNames: any = [];
+            commitsByBranch.forEach((cbb:any) => {
+                // number of commits in a branch
+                countCommits.push(cbb[1].length);
+                // the name of the branch in question
+                branchNames.push(cbb[0]);
+            });
 
-            // console.log(countCommits);
-            // console.log(branchNames);
-
-
-
-            // barData = {
-            //     labels: branchNames,
-            //     datasets: [{
-            //         backgroundColor: "rgba(87, 121, 234, 0.6)",
-            //         data: countCommits
-            //     }]
-            // }
+            barData = {
+                labels: branchNames,
+                datasets: [{
+                    backgroundColor: "rgba(87, 121, 234, 0.6)",
+                    data: countCommits
+                }]
+            }
 
 
         } catch (error) {
             console.log("Dette funket dårlig");
             
         }
-
-
-
-
 
     }
 
@@ -182,10 +179,15 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
 
     ChartJS.register(CategoryScale, LinearScale, BarElement);
 
+    const forceUpdate = useForceUpdate();
+
     return (
         <div>
             <Bar data={barData} />
             <p>{commits[0]}</p>
+            <button onClick={forceUpdate}>
+                Click to re-render
+            </button>
         </div>
 
         // {commits.map((commit: any) =>
