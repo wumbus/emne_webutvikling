@@ -1,6 +1,6 @@
 import React from "react";
 
-function title(value: number) {
+export function title(value: number) {
     if (value == 40) {
         return "Maintainer"
     } else if (value == 50) {
@@ -36,6 +36,8 @@ export function MembersList(props: { members: any, sort: any, filterBy: any }) {
                 }
             });
         }
+        console.log(filterBy[2]);
+    
         if (filterBy[2]) {
             membersOrg.forEach((member: any) => {
                 if (member[3] == "50" && !members.includes(member)) {
@@ -79,7 +81,7 @@ export function MembersList(props: { members: any, sort: any, filterBy: any }) {
         <table>
             <th>Avatar</th>
             <th>Name</th>
-            <th>User name</th>
+            <th>Username</th>
             <th>Role</th>
             {members.map((member: any) =>
                 <MemberItem key={member[0]} value={member} />)}
