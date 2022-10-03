@@ -100,34 +100,43 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
     render() {
         return (
-            <main className={styles.viewInfo}>
-                <h1>Hi</h1>
-                <p>{this.state.token}</p>
-                <div className={styles.row}>
-                    <div className={`${styles.columns} ${styles.members}`}>
-                        <p className = "memberliste">Liste over members</p>
-                        <form>
-                            <table>Sort by:
-                                <select name={this.state.sorting_members} onChange={this.handleChange}>
-                                    <option value="number">Role</option>
-                                    <option value="name">Name</option>
-                                </select>
-                            </table>
+            <main> 
+                <div className={styles.viewInfo}>
 
-                            <table>Filter by:
-                                <input type="checkbox" name="" id="0" onChange={this.handleCheckboxChange} />Developer 
-                                <input type="checkbox" name="" id="1" onChange={this.handleCheckboxChange} />Maintainer 
-                                <input type="checkbox" name="" id="2" onChange={this.handleCheckboxChange} />Owner
-                                <input type="checkbox" name="" id="3" onChange={this.handleCheckboxChange} />Bots
-                            </table>
-                        </form>
-                        <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} />
-                        
+                    <div className={styles.info1}>
+                        <h1>Welcome to Project</h1>
+                        <h3>{this.state.project_id}</h3>
                     </div>
-                    <div className="column commits">
-                    <p className="graph"> Her kommer en graf</p> 
-                    <table> graf</table>
+
+                    <div className={styles.info2}>
+                        <div className={styles.columnMembers}>
+                            <p className={styles.memberliste}>Liste over members</p>
+                            <form>
+                                <table>Sort by:
+                                    <select name={this.state.sorting_members} onChange={this.handleChange}>
+                                        <option value="number">Role</option>
+                                        <option value="name">Name</option>
+                                    </select>
+                                </table>
+
+                                <table>Filter by: &nbsp;
+                                    <input type="checkbox" name="" id="0" onChange={this.handleCheckboxChange} />Developer 
+                                    <input type="checkbox" name="" id="1" onChange={this.handleCheckboxChange} />Maintainer 
+                                    <input type="checkbox" name="" id="2" onChange={this.handleCheckboxChange} />Owner
+                                    <input type="checkbox" name="" id="3" onChange={this.handleCheckboxChange} />Bots
+                                </table>
+                            </form>
+                            <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} /> 
+                        </div>
                     </div>
+
+                    <div className={styles.info3}>
+                        <div className={styles.columnCommits}>
+                        <p className={styles.graph}> Her kommer en graf</p> 
+                        <table> graf</table>
+                        </div>
+                    </div>
+
                 </div>
             </main>
 

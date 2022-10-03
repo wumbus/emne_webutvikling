@@ -45,13 +45,9 @@ export const getProject = async (token: string, project_id: string) => {
     `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}?private_token=${token}`
   )
     .then((res) => {
-      if (res.ok) {
-        // True if HTTP status code is 200-299
-        console.log(res.ok)
-        //console.log(res)
+      if (res.ok) { // True if HTTP status code is in the inteval of 200-299
         return true;
       } else {
-        console.log("whyyyy")
         return false;
       }
     })

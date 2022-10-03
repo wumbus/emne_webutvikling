@@ -5,7 +5,7 @@ import styles from './css/LoginScreen.module.css';
 
 type LoginScreenType = {
   token: string;
-  project_id: number;
+  project_id: number | "";
   rememberMe: boolean;
   feedback: string
 }
@@ -23,7 +23,7 @@ const LoginScreen: FC = () => {
     const input = event.target;
 
     if (input.name === "project_id") {
-      setState((state) => {return { ...state, project_id: Number(input.value) }});
+      setState((state) => {return { ...state, project_id: input.value === "" ? "" : Number(input.value) }});
     } else if (input.name === "token") {
       setState((state) => {return { ...state, token: input.value }});
     }
@@ -59,8 +59,9 @@ const LoginScreen: FC = () => {
         <h3>Access Controll</h3>
 
           <div className={styles.field}>
-          <label> Project ID: </label>
-            <input
+          <label className={styles.label}> Project ID: </label>
+            <input 
+              className={styles.input}
               name="project_id"
               value={state.project_id}
               placeholder="Enter a Project ID"
@@ -69,8 +70,9 @@ const LoginScreen: FC = () => {
           </div>
 
           <div className={styles.field}>
-          <label> Access token: </label>
+          <label className={styles.label}> Access token: </label>
             <input
+              className={styles.input}
               name="token"
               value={state.token}
               placeholder="Enter a affiliated Acces token"
@@ -78,14 +80,14 @@ const LoginScreen: FC = () => {
             />
           </div>
           
-          <div className={styles.submit}>
-            <button type="submit">Submit</button>
+          <div>
+            <button className={styles.submit} type="submit">Submit</button>
           </div>
         </form>
       </div>
       <br/>
       <div className={styles.userFeedback}>
-        <label id={styles.feedback} >{state.feedback}</label>
+        <label className={styles.feedback} >{state.feedback}</label>
       </div>
     </main>
 
