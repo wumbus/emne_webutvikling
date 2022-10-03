@@ -111,7 +111,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                     <div className={styles.info2}>
                         <div className={styles.columnMembers}>
                             <p className={styles.memberliste}>Liste over members</p>
-                            <form>
+                            <form className={styles.form}>
                                 <table>Sort by:
                                     <select name={this.state.sorting_members} onChange={this.handleChange}>
                                         <option value="number">Role</option>
