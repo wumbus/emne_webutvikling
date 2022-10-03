@@ -16,7 +16,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             data: " ",
             issues: null,
             members: [1, 2],
-            sorting_members: " ",
+            sorting_members: localStorage.getItem("sort") || "" ,
             checkboxes: this.getCheckboxes(localStorage.getItem("checkboxes"))
         };
 
@@ -44,6 +44,15 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         }
     }
 
+    selectedSort(value: string) {
+        if (this.state.sorting_members == value) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     handleChange(event: any) {
         console.log("Jeg endres");
         console.log(event.target.value);
@@ -51,6 +60,8 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         this.setState({
             sorting_members: event.target.value
         });
+
+        localStorage.setItem("sort", event.target.value);
         console.log(this.state.sorting_members);
         // window.location.reload();
     }
@@ -137,8 +148,8 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                         <form>
                             <table>Sort by:
                                 <select name={this.state.sorting_members} onChange={this.handleChange}>
-                                    <option value="number">Role</option>
-                                    <option value="name">Name</option>
+                                    <option value="number" selected={this.selectedSort("number")}>Role</option>
+                                    <option value="name" selected={this.selectedSort("name")}>Name</option>
                                 </select>
                             </table>
 
