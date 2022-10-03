@@ -2,7 +2,9 @@ import React, { FC, useState, useEffect } from "react";
 import { getProject } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
-// A type used to store the token and project id.
+/**
+ * A type used to store the token and project id.
+ **/
 type LoginScreenType = {
 	token: string;
 	project_id: number;
