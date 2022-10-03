@@ -21,45 +21,48 @@ export function MembersList(props: { members: any, sort: any, filterBy: any }) {
     console.log(membersOrg[0]);
 
     let members: any = [];
-    if (filterBy[0]) {
-        membersOrg.forEach((member: any) => {
-            if (member[3] == "30") {
+    if (membersOrg[0] != 1) { // Checks if members is set to the standard one or if there are actually members
+        if (filterBy[0]) {
+            membersOrg.forEach((member: any) => {
+                if (member[3] == "30" && !members.includes(member)) {
+                    members.push(member)
+                }
+            });
+        }
+        if (filterBy[1]) {
+            membersOrg.forEach((member: any) => {
+                if (member[3] == "40" && !members.includes(member)) {
+                    members.push(member)
+                }
+            });
+        }
+        if (filterBy[2]) {
+            membersOrg.forEach((member: any) => {
+                if (member[3] == "50" && !members.includes(member)) {
+                    members.push(member)
+                }
+            });
+        }
+        if (filterBy[3]) {
+            // Bots
+            membersOrg.forEach((member:any) => {
+                console.log(member[0]);
+                
+                if (member[0].includes("_bot")  && !members.includes(member)) {
+                    members.push(member)
+                }
+            });
+        }
+    
+        // if none are selected show all
+        if (!(filterBy[0] || filterBy[1] || filterBy[2] || filterBy[3])) {
+            membersOrg.forEach((member: any) => {
                 members.push(member)
-            }
-        });
+            });
+        }
+    
     }
-    if (filterBy[1]) {
-        membersOrg.forEach((member: any) => {
-            if (member[3] == "40") {
-                members.push(member)
-            }
-        });
-    }
-    if (filterBy[2]) {
-        membersOrg.forEach((member: any) => {
-            if (member[3] == "50") {
-                members.push(member)
-            }
-        });
-    }
-    if (filterBy[3]) {
-        // Bots
-        membersOrg.forEach((member:any) => {
-            console.log(member[0]);
-            
-            if (member[0].includes("_bot")) {
-                members.push(member)
-            }
-        });
-    }
-
-    // if none are selected show all
-    if (!(filterBy[0] || filterBy[1] || filterBy[2] || filterBy[3])) {
-        membersOrg.forEach((member: any) => {
-            members.push(member)
-        });
-    }
-
+    
     console.log(members);
 
 

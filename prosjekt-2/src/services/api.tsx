@@ -83,5 +83,7 @@ export const getMembers = async (token: string, project_id: string) => {
     const { username, name, avatar_url, access_level } = member;
     membersArray.push([username, name, avatar_url, access_level.toString()]);
   });
+  console.log(membersArray);
+  
   return membersArray;
 };
