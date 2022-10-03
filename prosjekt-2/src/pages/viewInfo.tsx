@@ -104,7 +104,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                 <h1>Hi</h1>
                 <p>{this.state.token}</p>
                 <div className={styles.row}>
-                    <div className={`${styles.columns} ${styles.members}`}>
+                    <div className={styles.columnmembers}>
                         <p className = "memberliste">Liste over members</p>
                         <form>
                             <table>Sort by:
