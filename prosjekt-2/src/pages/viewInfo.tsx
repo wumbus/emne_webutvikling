@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { CommitsView } from "../components/commits";
 import { MembersList } from "../components/User"
 import { getProject, getProjectIssues, getMembers, getCommits, getCommitsByAllBranches, getNumberOfCommitsByAllBranches, getBranches } from "../services/api";
@@ -194,12 +195,19 @@ class ViewInfo extends React.Component<{}, { token: any, project_id: any, data: 
     render() {
         return (
             <main>
+                       
                 <div className={styles.viewInfo}>
+                
+                {/* <div className={styles.info4}>
+                    </div> */}
 
                     <div className={styles.info1}>
                         <h1>Welcome to Project</h1>
                         <h3>{this.state.project_id}</h3>
+                        <Link className={styles.buttonBack} to={'/login'}>Back to access page</Link> 
                     </div>
+
+                  
 
                     <div className={styles.info2}>
                         <div className={styles.columnMembers}>
