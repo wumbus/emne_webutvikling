@@ -129,7 +129,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
                     <div className={styles.info2}>
                         <div className={styles.columnMembers}>
-                            <p className={styles.memberliste}>Project Members</p>
+                            <p className={styles.memberlist}>Project Members</p>
                             <form className={styles.form}>
                                 <table>Sort by: &nbsp;
                                     <select name={this.state.sorting_members} onChange={this.handleChange}>
@@ -139,10 +139,10 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                                 </table>
 
                                 <table>Filter by: &nbsp;
-                                    <input type="checkbox" name="" id="0" onChange={this.handleCheckboxChange} />Developer 
-                                    <input type="checkbox" name="" id="1" onChange={this.handleCheckboxChange} />Maintainer 
-                                    <input type="checkbox" name="" id="2" onChange={this.handleCheckboxChange} />Owner
-                                    <input type="checkbox" name="" id="3" onChange={this.handleCheckboxChange} />Bots
+                                    <input type="checkbox" name="" id="0" onChange={this.handleCheckboxChange} />Developer &nbsp;
+                                    <input type="checkbox" name="" id="1" onChange={this.handleCheckboxChange} />Maintainer &nbsp;
+                                    <input type="checkbox" name="" id="2" onChange={this.handleCheckboxChange} />Owner &nbsp;
+                                    <input type="checkbox" name="" id="3" onChange={this.handleCheckboxChange} />Bots &nbsp;
                                 </table>
                             </form>
                             <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} /> 
