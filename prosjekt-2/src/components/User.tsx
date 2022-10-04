@@ -7,7 +7,7 @@ import styles from '../pages/css/viewInfo.module.css';
  * @param value The role's number value
  * @returns     The role's title
  */
-function title(value: number) {
+export function title(value: number) {
 	if (value == 40) {
 		return "Maintainer";
 	} else if (value == 50) {
@@ -38,21 +38,23 @@ export function MembersList(props: { members: string[][]; sort: string; filterBy
 		if (filterBy[0]) {
 			membersOrg.forEach((member: string[]) => {
 				if (member[3] == "30" && !members.includes(member)) {
-					members.push(member);
+					members.push(member)
 				}
 			});
 		}
 		if (filterBy[1]) {
 			membersOrg.forEach((member: string[]) => {
 				if (member[3] == "40" && !members.includes(member)) {
-					members.push(member);
+					members.push(member)
 				}
 			});
 		}
+		console.log(filterBy[2]);
+
 		if (filterBy[2]) {
 			membersOrg.forEach((member: string[]) => {
 				if (member[3] == "50" && !members.includes(member)) {
-					members.push(member);
+					members.push(member)
 				}
 			});
 		}
@@ -60,7 +62,7 @@ export function MembersList(props: { members: string[][]; sort: string; filterBy
 			// Bots
 			membersOrg.forEach((member: string[]) => {
 				if (member[0].includes("_bot") && !members.includes(member)) {
-					members.push(member);
+					members.push(member)
 				}
 			});
 		}
@@ -70,7 +72,10 @@ export function MembersList(props: { members: string[][]; sort: string; filterBy
 				members.push(member);
 			});
 		}
+
 	}
+
+	console.log(members);
 
 	// Handles the sorting
 	if (sorting == "number") {
@@ -115,7 +120,8 @@ export function MembersList(props: { members: string[][]; sort: string; filterBy
 
 		</table>
 	);
-}
+};
+
 
 
 /**
