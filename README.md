@@ -1,92 +1,40 @@
-# prosjekt-2
+# Gruppe 32 - Prosjekt 2 Dokumentasjon
 
+## Generell diskusjon om løsningen
+Vi har laget en web-applikasjon som presenterer informasjon om et gitt GitLab prosjekt. Etter man har skrevet inn prosjekt ID og en tilhørende access token vil man få oversikt over data vi henter ut ved hjelp av GitLab APIet. Man får en tabell med informasjon over prosjektets medlemmer, hvor man kan både filtrere på rolle (f.eks. Developer eller Owner) og sortere enten på rolle eller navn. Man får også se en graf over antall commits per bruker eller antall commits per branch. For commits per branch vil det totale antallet commits, inkludert commits-ene før branchen ble opprettet, vises. 
 
+## Typescript
+Vi har prøvd å ha mest mulig korrekte typer til alle våre variabler. 
 
-## Getting started
+## Responsiv web-design
+På innloggingssiden har vi valgt å droppe media-queries, fordi vi kun har et par elementer på siden. Disse er alltid plassert midt på skjermen, og bakgrunnen fyller alltid hele vinduet som er definert som viewport. På viewInfo siden vår brukte vi media-queries ettersom vi har flere elementer som må tilpasse skjermstørrelsen. På en bred skjerm så vil elementene vises ved  siden av hverandre, på en mindre skjerm så vil elementene vises under hverandre. Denne flytende layouten gjør siden lesbar, uansett om man ser den på en større PC skjerm eller på mobil. Avatarene til medlemmene blir skalert fra 35px til 14px når vi går ned til en vindustørrelse under 358px, slik at de ikke tar for stor plass. Grafene egner seg best til å vises på desktop, spesielt ettersom x-aksen sine navn automatisk. Gitt mer tid, ville det vært smart å finne en løsning som gjør navnene lettere å lese på mindre skjermer.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Funksjonelle komponenter / klasser
+Vi har brukt en kombinasjon av funksjonelle komponenter og klasser. Vi valgte å implementere LoginScreen som en funksjonell komponent fordi i denne komponenten ønsket vi å ta i bruk Navigate, noe man ikke kan gjøre like lett i en klasse. Vi valgte derimot å implementere ViewInfo som en klasse, fordi vi da kunne ta i bruk “life cycle methods” som componentDidMount() som vi bruker relatert til våre GitLab API kall. Generelt sett brukte vi ellers funksjonelle komponenter, fordi det er best practice å bruke disse om man kan.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Chart.js
+Vi valgte å bruke en ferdig lagde funksjonelle komponent Bar fra biblioteket react-chartjs-2, istedenfor å designe noe selv. Dette gjorde vi fordi vi regnet det som unødvendig å bruke tid på å lage fra bunnen av. Fokuset hadde vært på CSS og ikke logikk.
 
-## Add your files
+## Henting av data - GitLab APIet
+Vi har plassert all logikk rundt API-call i en egen fil kalt api.tsx. Vi bruker fetch() som asynkront henter responsen til http forespørselen. Vi har opprettet egen definerte typer som hjelper oss å plukke ut all relevant informasjon fra datasettet. Alle funksjonen returnerer informasjonen i et (nøstet) array. 
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+På første siden så sjekker vi om brukeren har skrevet inn en gyldig kombinasjon av prosjekt ID og access token ved å se om responsen til forespørselen er mellom 200 - 299 eller utenfor. Hvis denne kombinasjonen er ugyldig, så får brukeren tilbakemelding om det. 
 
-```
-cd existing_repo
-git remote add origin https://gitlab.stud.idi.ntnu.no/it2810-h22/Team-32/prosjekt-2.git
-git branch -M main
-git push -uf origin main
-```
+På informasjonssiden (viewInfo.tsx) under metoden componentDidMount så kaller vi på de relevante funksjonene fra api-fila med bruk av then().catch() syntaks. Ergo først etter at vi har mottatt en respons på forespørselen, så kan vi bruke responsen vi fikk videre. ViewInfo er en klassen og vi lagrer arrayene, som api-kallene returnerer, i state-en til klassen.   
 
-## Integrate with your tools
+Relevant informasjon blir sendt videre til funksjonelle komponenter som props. Disse videre behandler GitLab API-dataen til vi har noe som kan vises på en skjerm. Altså medlemslisten og grafen over commits-data.  
 
-- [ ] [Set up project integrations](https://gitlab.stud.idi.ntnu.no/it2810-h22/Team-32/prosjekt-2/-/settings/integrations)
+## Lagring av lokal informasjon - HTML Web Storage
+Vi bestemte oss for å lagre access token og project id under session storage. Dette valget tok vi fordi det ikke alltid er hensiktsmessig å lagre slik type informasjon over lengre tidsperioder. Videre lagrer vi innstillingene brukeren benytter i medlemslista i local storage. Dette valget tok vi delvis fordi vi ønsket å lagre noe i local storage, men også fordi en bruker kan sette pris på å komme tilbake til siden og ha samme informasjonen vist som da de avsluttet forrige session.
 
-## Collaborate with your team
+## Context 
+Vi har benyttet oss av Context APIet for å bytte mellom dark mode og light mode på informasjonssiden vår. Vi opprettet en fil kalt themeContext.tsx, hvor vi definerte endringene i utseende vi ønsket for disse to alternativene. ViewInfo sin contexttype blir satt til denne, og vi lagrer hvilken alternativ som er aktiv i state-en. Her blir tekst og bakgrunnsfarge endret. Man oppdaterer state-en ved å trykke på “Change theme” knappen. Den funksjonelle komponenten MembersList tar i bruk den samme contexten, og endrer også styling basert på den. 
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## Testing
+Vi har satt opp testing med Jest. Hoveddelen av testingen vår ligger i filen User.test.tsx. Vi utfører to snapshot tester ved bruk av toMatchSnapshot() funksjonen, som begge tester samme komponent, med to ulike input. Videre tester vi en hjelpefunksjon ved bruk av expect().toBe() og sjekker for forventet return verdi. Her også tester vi to ulike typer input. Hadde vi hatt mer tid satt av til testing, ville vi også laget noen tester som eksplisitt tester verdier som ikke tillates for å sjekke feilmeldingsbehandling. Til slutt tester vi også om vi kan rendere en div uten feil i filen veiwInfo.test.tsx.
 
-## Test and Deploy
+## Testing med ulike devices
+Vi har test web-applikasjonen i Google Chrome (ver. 105.0.5195.125),  Firefox (ver. 105.0.1) og Microsoft Edge på PC/desktop. Funksjonaliteter som har blitt testet er skalering over forskjellige skjermstørrelser, som har vært viktig i utviklingen. Både Google Chrome og Firefox har hatt utviklerverktøy, hvor vi kunne emulere mindre skjermer som iPhone 7. For disse sjekket vi både for horisontal og vertikal layout. Vi ble generelt fornøyd med layoutet, foruten med navnene på x-aksen til grafen som tidligere nevnt. 
 
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## GitLab
+Gruppen har gjennom hele prosjektet benyttet seg av GitLabs system for issues. Disse har vi laget brancher med, og vi har hatt som regel at minst én annen person må se over koden før den eventuelt blir merget. Vi har også vært konsistente på å markere ulike commits til deres tilhørende issues. Vi har assignet ulike issues til gruppemedlemmer, slik at vi har fått bedre kontroll over hvem som arbeider med ulike arbeidsoppgaver, og hvem som eventuelt er arbeidsledige. Vi var litt trege i start med GitLab, ettersom vi startet med mob programmering, så dette er noe vi ser kunne vært et område for forbedring til neste gang.
