@@ -21,17 +21,21 @@
     min-width: 400px;
 }
 
+.clean {
+    background-color: #FFFFFF;
+}
+
 /* #FCA326 #FC6D27 */
 /* #fc6e2752 #fca32654*/
-tr:nth-child(even) {
+tr.fancy:nth-child(even) {
     background-color:#f0441052; 
     border-bottom: 1px solid;
 }
-tr:nth-child(odd) {
+tr.fancy:nth-child(odd) {
     background-color: #fcb82654;
     border-bottom: 1px solid;
 }
-td:first-child{
+td.fancy:first-child{
     background-color: #8c929d8c;
 }
 

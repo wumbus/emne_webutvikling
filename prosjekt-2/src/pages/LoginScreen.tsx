@@ -20,7 +20,7 @@ type LoginScreenType = {
 const LoginScreen: FC = () => {
   const [state, setState] = useState<LoginScreenType>({
     token: "",
-    project_id: Number(),
+    project_id: 0,
     rememberMe: true,
     feedback: ""
   });
@@ -95,7 +95,7 @@ const LoginScreen: FC = () => {
               : <input type="number"
                 className={styles.input}
                 name="project_id"
-                value={state.project_id}
+                defaultValue={state.project_id}
                 placeholder="Enter a Project ID"
                 onChange={handleChange}
               />}
@@ -106,7 +106,7 @@ const LoginScreen: FC = () => {
             <input
               className={styles.input}
               name="token"
-              value={state.token}
+              defaultValue={state.token}
               placeholder="Enter access token"
               onChange={handleChange}
             />

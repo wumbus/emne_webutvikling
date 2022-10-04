@@ -60,21 +60,6 @@ class ViewInfo extends React.Component<{}, { token: any, project_id: any, issues
     }
 
     /**
-     * Helper function that allows the selected parameter in each option of the select to be decided based on what is stored in localStorage.
-     * 
-     * @param value     The option's name
-     * @returns     True if the option should be the selected option
-     */
-    selectedSort(value: string) {
-        if (this.state.sorting_members == value) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    /**
      * On change, it updates the selected way of sorting.
      * 
      * @param event     Select is changed
@@ -204,19 +189,31 @@ class ViewInfo extends React.Component<{}, { token: any, project_id: any, issues
                             <div className={styles.columnMembers}>
                                 <p className={styles.memberlist}>Project Members</p>
                                 <form className={styles.form}>
-                                    <table>Sort by: &nbsp;
-                                        <select name={this.state.sorting_members} onChange={this.handleChange} >
-                                            <option value="number" selected={this.selectedSort("number")}>Role</option>
-                                            <option value="name" selected={this.selectedSort("name")}>Name</option>
-                                        </select>
+                                    <table className="clean">
+                                        <tbody>
+                                            <tr>
+                                                <td><label>
+                                                    Sort by: &nbsp;
+                                                    <select name={this.state.sorting_members} onChange={this.handleChange} defaultValue={this.state.sorting_members}>
+                                                        <option value="number">Role</option>
+                                                        <option value="name">Name</option>
+                                                    </select>
+                                                </label></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label>
+                                                    Filter by: &nbsp;
+                                                    <input type="checkbox" name="" id="0" checked={this.state.checkboxes[0]} onChange={this.handleCheckboxChange} />Developer &nbsp;
+                                                    <input type="checkbox" name="" id="1" checked={this.state.checkboxes[1]} onChange={this.handleCheckboxChange} />Maintainer &nbsp;
+                                                    <input type="checkbox" name="" id="2" checked={this.state.checkboxes[2]} onChange={this.handleCheckboxChange} />Owner &nbsp;
+                                                    <input type="checkbox" name="" id="3" checked={this.state.checkboxes[3]} onChange={this.handleCheckboxChange} />Bots &nbsp;
+                                                </label></td>
+                                            </tr>
+                                        </tbody>
+
+
                                     </table>
 
-                                    <table>Filter by: &nbsp;
-                                        <input type="checkbox" name="" id="0" checked={this.state.checkboxes[0]} onChange={this.handleCheckboxChange} />Developer &nbsp;
-                                        <input type="checkbox" name="" id="1" checked={this.state.checkboxes[1]} onChange={this.handleCheckboxChange} />Maintainer &nbsp;
-                                        <input type="checkbox" name="" id="2" checked={this.state.checkboxes[2]} onChange={this.handleCheckboxChange} />Owner &nbsp;
-                                        <input type="checkbox" name="" id="3" checked={this.state.checkboxes[3]} onChange={this.handleCheckboxChange} />Bots &nbsp;
-                                    </table>
                                 </form>
                                 <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} />
                             </div>

@@ -1,5 +1,6 @@
-import React, {useContext} from 'react';
-import {ThemeContext, ThemeProvider, themes} from '../services/themeContext';
+import React, { useContext } from 'react';
+import { ThemeContext, ThemeProvider, themes } from '../services/themeContext';
+import styles from '../pages/css/viewInfo.module.css';
 /**
  * A helper function that converts a given value into its corresponding role in GitLab
  *
@@ -97,22 +98,29 @@ export function MembersList(props: { members: any; sort: any; filterBy: any }) {
 	// retrieve the context
 	let theme = useContext(ThemeContext);
 	console.log(theme);
-	
+
 	return (
-		 
-		<table style={{borderColor: theme.borderColor}}>
-			<th>Avatar</th>
-			<th>Name</th>
-			<th>User name</th>
-			<th>Role</th>
-			{members.map((member: any) => (
-				<MemberItem key={member[0]} value={member} />
-			))}
+
+		<table style={{ borderColor: theme.borderColor }}>
+			<thead>
+				<tr>
+					<th>Avatar</th>
+					<th>Name</th>
+					<th>User name</th>
+					<th>Role</th>
+				</tr>
+			</thead>
+			<tbody>
+
+				{members.map((member: any) => (
+					<MemberItem key={member[0]} value={member} />
+				))}
+			</tbody>
+
 		</table>
 	);
 }
-// set context type
-MembersList.contextType = ThemeContext;
+
 
 /**
  * A function that gets information about a particular member and returns a table row 
@@ -123,13 +131,13 @@ MembersList.contextType = ThemeContext;
  */
 export function MemberItem(props: any) {
 	return (
-		<tr>
-			{" "}
-			<td>
-				<img src={props.value[2]} alt="Avatar" />{" "}
+		<tr className={styles.fancy}>
+			<td className={styles.fancy}>
+				<img src={props.value[2]} alt="Avatar" />
 			</td>
-			<td>{props.value[1]} </td> <td>{props.value[0]} </td>{" "}
-			<td>{title(props.value[3])}</td>
+			<td className={styles.fancy}>{props.value[1]} </td>
+			<td className={styles.fancy}>{props.value[0]} </td>
+			<td className={styles.fancy}>{title(props.value[3])}</td>
 		</tr>
 	);
 }
