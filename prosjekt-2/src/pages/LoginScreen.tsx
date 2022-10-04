@@ -85,13 +85,20 @@ const LoginScreen: FC = () => {
 
           <div className={styles.field}>
             <label className={styles.label}> Project ID: </label>
-            <input
-              className={styles.input}
-              name="project_id"
-              value={state.project_id}
-              placeholder="Enter a Project ID"
-              onChange={handleChange}
-            /> {/* Placeholder vises ikke fordi verdien enten er et tall eller 0? */}
+            {state.project_id == 0
+              ? <input type="number"
+                className={styles.input}
+                name="project_id"
+                placeholder="Enter a Project ID"
+                onChange={handleChange}
+              />
+              : <input type="number"
+                className={styles.input}
+                name="project_id"
+                value={state.project_id}
+                placeholder="Enter a Project ID"
+                onChange={handleChange}
+              />}
           </div>
 
           <div className={styles.field}>
@@ -100,7 +107,7 @@ const LoginScreen: FC = () => {
               className={styles.input}
               name="token"
               value={state.token}
-              placeholder="Enter a affiliated Acces token"
+              placeholder="Enter access token"
               onChange={handleChange}
             />
           </div>
