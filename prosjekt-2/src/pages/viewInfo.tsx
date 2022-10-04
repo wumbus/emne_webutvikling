@@ -1,12 +1,13 @@
 import React from "react";
 import { ListFormat } from "typescript";
-import { MembersList, MemberItem } from "../components/User"
-import { getProject, getProjectIssues, getMembers } from "../services/api";
-// import { ProjectType, IssuesType, MembersType } from "../services/api";
-import './css/viewInfo.css';
+import { CommitsView } from "../components/commits";
+import { MembersList } from "../components/User"
+import { getProject, getProjectIssues, getMembers, getCommits, getCommitsByAllBranches, getNumberOfCommitsByAllBranches, getBranches } from "../services/api";
+import styles from './css/viewInfo.module.css';
 
 
-class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: any, issues: any, members: any, sorting_members: string, checkboxes: any }> {
+
+class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: any, issues: any, members: string[][], sorting_members: string, checkboxes: any, commits: any, commitsByBranch: any, xaxis: any }> {
     constructor(props: any) {
         super(props);
 
@@ -15,12 +16,16 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             project_id: sessionStorage.getItem("project_id")||0,
             data: " ",
             issues: null,
-            members: [1, 2],
             sorting_members: localStorage.getItem("sort") || "" ,
-            checkboxes: this.getCheckboxes(localStorage.getItem("checkboxes"))
+            checkboxes: this.getCheckboxes(localStorage.getItem("checkboxes")),
+            members: [],
+            commits: [],
+            commitsByBranch: [],
+            xaxis: "person"
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangeGraph = this.handleChangeGraph.bind(this);
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
         this.getCheckboxes = this.getCheckboxes.bind(this);
 
@@ -54,9 +59,6 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
     }
 
     handleChange(event: any) {
-        console.log("Jeg endres");
-        console.log(event.target.value);
-
         this.setState({
             sorting_members: event.target.value
         });
@@ -65,10 +67,14 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         console.log(this.state.sorting_members);
         // window.location.reload();
     }
+    
+    handleChangeGraph(event: any) {
+        this.setState({
+            xaxis: event.target.value
+        });
+    }
 
     handleCheckboxChange(event: any) {
-        console.log(event.target.checked);
-        console.log(event.target.id);
         const id = parseInt(event.target.id);
 
         let checkboxes = this.state.checkboxes;
@@ -79,10 +85,8 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         });
 
         localStorage.setItem("checkboxes", checkboxes);
-
         console.log(this.state.checkboxes);
     }
-
 
     componentDidMount() {
         console.log("Component Did MOunt");
@@ -112,7 +116,14 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             data: getProject(this.state.token,this.state.project_id)
         });
 
-        const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
+        // const data: any = getProject(this.state.token,this.state.project_id); // <-- blir ikke brukt ?
+
+        // const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
+        //console.log(this.state.data);
+
+        
+
+        /* const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
         requestIssues.then((issues: any) => {
             console.log(issues);
             this.setState({
@@ -120,55 +131,92 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             });
 
         }).catch((err: any) => {
-            console.log("fakk");
+            console.log("fakk issues");
         });
+        */
 
-        console.log("Requesting members");
+       const requestMembers: any = getMembers(this.state.token,this.state.project_id);
+        console.log(requestMembers);
         
-        const requestMembers: any = getMembers(this.state.token,this.state.project_id);
-        requestMembers.then((members: any) => {
-            console.log(members);
+        requestMembers.then((members: string[][]) => {
             this.setState({
                 members: members
             });
+            console.log(members);
+            
 
         }).catch((err: any) => {
-            console.log("fakk");
+            console.log("Failed Request (getMembers)");
         });
+
+        const requestCommits: any = getCommits(this.state.token,this.state.project_id);
+        requestCommits.then((commits: any) => {
+            this.setState({
+                commits: commits
+            });
+        }).catch((err: any) => {
+            console.log("Failed Request (getCommits)");
+        });
+
+        const requestCommitsByAllBranches: any = getCommitsByAllBranches(this.state.token,this.state.project_id);
+        requestCommitsByAllBranches.then((commitsByBranch: any) => {
+            console.log(commitsByBranch);
+            this.setState({
+                commitsByBranch: commitsByBranch
+            });
+        }).catch((err: any) => {
+            console.log("Failed Request (getCommitsByAllBranches)");
+        });
+
     }
 
     render() {
         return (
-            <div>
-                <h1>Hi</h1>
-                <p>{this.state.token}</p>
-                <div className="row">
-                    <div className="column members">
-                        <p className = "memberliste">Liste over members</p>
-                        <form>
-                            <table>Sort by:
-                                <select name={this.state.sorting_members} onChange={this.handleChange}>
-                                    <option value="number" selected={this.selectedSort("number")}>Role</option>
-                                    <option value="name" selected={this.selectedSort("name")}>Name</option>
-                                </select>
-                            </table>
+            <main> 
+                <div className={styles.viewInfo}>
 
-                            <table>Filter by:
-                                <input type="checkbox" name="" id="0" checked={this.state.checkboxes[0]} onChange={this.handleCheckboxChange} />Developer 
-                                <input type="checkbox" name="" id="1" checked={this.state.checkboxes[1]} onChange={this.handleCheckboxChange} />Maintainer 
-                                <input type="checkbox" name="" id="2" checked={this.state.checkboxes[2]} onChange={this.handleCheckboxChange} />Owner
-                                <input type="checkbox" name="" id="3" checked={this.state.checkboxes[3]} onChange={this.handleCheckboxChange} />Bots
-                            </table>
-                        </form>
-                        <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} />
-                        
+                    <div className={styles.info1}>
+                        <h1>Welcome to Project</h1>
+                        <h3>{this.state.project_id}</h3>
                     </div>
-                    <div className="column commits">
-                    <p className="graph"> Her kommer en graf</p> 
-                    <table> graf</table>
+
+                    <div className={styles.info2}>
+                        <div className={styles.columnMembers}>
+                            <p className={styles.memberlist}>Project Members</p>
+                            <form className={styles.form}>
+                                <table>Sort by: &nbsp;
+                                    <select name={this.state.sorting_members} onChange={this.handleChange}>
+                                        <option value="number" selected={this.selectedSort("number")}>Role</option>
+                                        <option value="name" selected={this.selectedSort("name")}>Name</option>
+                                    </select>
+                                </table>
+
+                                <table>Filter by: &nbsp;
+                                    <input type="checkbox" name="" id="0" checked={this.state.checkboxes[0]} onChange={this.handleCheckboxChange} />Developer &nbsp;
+                                    <input type="checkbox" name="" id="1" checked={this.state.checkboxes[1]} onChange={this.handleCheckboxChange} />Maintainer &nbsp;
+                                    <input type="checkbox" name="" id="2" checked={this.state.checkboxes[2]} onChange={this.handleCheckboxChange} />Owner &nbsp;
+                                    <input type="checkbox" name="" id="3" checked={this.state.checkboxes[3]} onChange={this.handleCheckboxChange} />Bots &nbsp;
+                                </table>
+                            </form>
+                            <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} /> 
+                        </div>
                     </div>
+
+                    <div className={styles.info3}>
+                        <div className={styles.columnCommits}>
+                            <p className={styles.graph}> Project Statistics </p> 
+                            <label>View graph: &nbsp;
+                                <select name={this.state.xaxis} onChange={this.handleChangeGraph}>
+                                    <option value="person">Commits per person</option>
+                                    <option value="branch">Commits per branch</option>
+                                </select>
+                            </label>
+                            <CommitsView commits={this.state.commits} commitsByBranch={this.state.commitsByBranch} xaxis={this.state.xaxis} />
+                        </div>
+                    </div>
+
                 </div>
-            </div>
+            </main>
 
             
         );
