@@ -11,7 +11,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
-export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: any }) {
+export function CommitsView(props: { commits: string[][], commitsByBranch: string[][], xaxis: string }) {
     // initiate props
     const commits = props.commits;
     const xaxis = props.xaxis;
@@ -30,7 +30,7 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
         // find all comitters aka. all the different emails
         // find all emails in all the commits
 
-        commits.sort((a:any, b:any) => {
+        commits.sort((a:string[], b:string[]) => {
             let aEmail = a[5].toLowerCase(),
                 bEmail = b[5].toLowerCase();
             if (aEmail < bEmail) {
@@ -43,7 +43,7 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
         });
 
         let committers: Array<string> = [];
-        commits.forEach((commit: any) => {
+        commits.forEach((commit: string[]) => {
             committers.push(commit[5]);
         });
         // find the unique emails
@@ -53,7 +53,7 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
         let countCommits: Array<number> = [];
         uniqueCommitters.forEach(function (email: string) {
             let count = 0;
-            commits.forEach((commit: any) => {
+            commits.forEach((commit: string[]) => {
                 if (commit[5] == email) {
                     count++;
                 }
@@ -75,11 +75,13 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
 
             // sort after branch number
             let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-            commitsByBranch.sort(collator.compare);
+            commitsByBranch.sort((a:string[], b:string[]) => {
+                return collator.compare(a[0],b[0])
+            });
 
-            let countCommits: any = [];
-            let branchNames: any = [];
-            commitsByBranch.forEach((cbb: any) => {
+            let countCommits: number[] = [];
+            let branchNames: string[] = [];
+            commitsByBranch.forEach((cbb: string[]) => {
                 // number of commits in a branch
                 countCommits.push(cbb[1].length);
                 // the name of the branch in question
@@ -95,7 +97,7 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
                 }]
             }
         } catch (error) {
-            console.log("Dette funket dårlig");
+            console.log("Error with xaxis as branch");
 
         }
     }
