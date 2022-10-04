@@ -56,7 +56,7 @@ export function MembersList(props: { members: any; sort: any; filterBy: any }) {
 		if (filterBy[3]) {
 			// Bots
 			membersOrg.forEach((member: any) => {
-				console.log(member[0]);
+				// console.log(member[0]);
 
 				if (member[0].includes("_bot") && !members.includes(member)) {
 					members.push(member);
@@ -77,8 +77,21 @@ export function MembersList(props: { members: any; sort: any; filterBy: any }) {
 		console.log("fakk 2");
 		members.sort((a: any, b: any) => b[3] - a[3]);
 	} else if (sorting == "name") {
-		members.sort();
-	}
+
+		members.sort((a: any, b: any) => {
+			let aName = a[1].toLowerCase(),
+				bName = b[1].toLowerCase();
+
+			if (aName < bName) {
+				return -1;
+			}
+			else if (aName > bName) {
+				return 1;
+			}
+			return 0;
+		});
+	};
+
 
 	return (
 		<table>
