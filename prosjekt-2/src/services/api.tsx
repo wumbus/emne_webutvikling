@@ -21,13 +21,6 @@ export type BranchesType = {
   name: string
 }
 
-// Projext id
-// 17464
-
-// Acces tokens
-// glpat-9CzoD9y7CQx2ujy4Ubmx Cecilie
-// glpat-wsMyuXMF-aYEBu9rXcED Jimmy
-
 /**
  * Attempts to make a successful connection with the GitLab project using the provided access token.
  * 
@@ -35,12 +28,14 @@ export type BranchesType = {
  * @param project_id  The id of the project we want to access information from
  * @returns   True if the connection is successfully established, false if not
  */
-export const getProject = async (token: string, project_id: string) => {
+export const getResponse = async (token: string, project_id: string) => {
   return await fetch(
     `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}?private_token=${token}`
   )
     .then((res) => {
       if (res.ok) { // True if HTTP status code is in the inteval of 200-299
+        console.log(res);
+        
         return true;
       } else {
         return false;

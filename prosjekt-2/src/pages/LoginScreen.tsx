@@ -1,5 +1,5 @@
-import React, { FC, useState, useEffect, DetailedHTMLProps, FormHTMLAttributes, FormEvent } from "react";
-import { getProject } from "../services/api";
+import React, { FC, useState, useEffect, FormEvent } from "react";
+import { getResponse } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import styles from './css/LoginScreen.module.css';
 
@@ -56,7 +56,7 @@ const LoginScreen: FC = () => {
     sessionStorage.setItem("token", token);
     sessionStorage.setItem("project_id", project_id.toString());
 
-    const res = await getProject(token, project_id.toString()) //endre getProject til getResponse ?
+    const res = await getResponse(token, project_id.toString());
     if (res) {
       navigate("/viewInfo", { replace: true })
     }
