@@ -1,13 +1,6 @@
-import React from "react";
-
-export type ProjectType = {
-  id: number;
-  description: string | null;
-  name: string;
-  creator_id: number;
-  message: string;
-};
-
+/**
+ * A type that stores the information we want from the GetIssues call.
+ */
 export type IssuesType = {
   iid: number;
   title: string;
@@ -15,6 +8,9 @@ export type IssuesType = {
   username: string;
 };
 
+/**
+ * A type that stores the information we want from the GetMembers call.
+ */
 export type MembersType = {
   username: string;
   name: string;
@@ -42,18 +38,13 @@ export type BranchesType = {
 // glpat-9CzoD9y7CQx2ujy4Ubmx Cecilie
 // glpat-wsMyuXMF-aYEBu9rXcED Jimmy
 
-// export const getProject = async (token: string, project_id: string) => {
-//     const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}?private_token=${token}`);
-//     const data: ProjectType = await res.json();
-//     //   var dataParsed = await res.json();
-
-//     const { id, name, creator_id } = data;
-//     console.log(id, name, creator_id, data);
-
-//     //   return dataParsed;
-//     return data;
-// }
-
+/**
+ * Attempts to make a successful connection with the GitLab project using the provided access token.
+ * 
+ * @param token   The access token 
+ * @param project_id  The id of the project we want to access information from
+ * @returns   True if the connection is successfully established, false if not
+ */
 export const getProject = async (token: string, project_id: string) => {
   return await fetch(
     `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}?private_token=${token}`
@@ -70,6 +61,13 @@ export const getProject = async (token: string, project_id: string) => {
     });
 };
 
+/**
+ * Fetches the issues from the requested project and stores the information in an IssueType.
+ *  
+ * @param token   The access token
+ * @param project_id  The id of the project we want to access information from
+ * @returns   An array of the issues in the project
+ */
 export const getProjectIssues = async (token: string, project_id: string) => {
   const res = await fetch(
     `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/issues?private_token=${token}`
@@ -85,6 +83,13 @@ export const getProjectIssues = async (token: string, project_id: string) => {
   return issuesArray;
 };
 
+/**
+ * Fetches the members from the requested project and stores the information in a MembersType.
+ * 
+ * @param token   The access token
+ * @param project_id The id of the project we want to access information from
+ * @returns   An array of the members in the project
+ */
 export const getMembers = async (token: string, project_id: string) => {
   const res = await fetch(
     `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/members/all?private_token=${token}`

@@ -1,22 +1,23 @@
 import React from "react";
-import { ListFormat } from "typescript";
 import { CommitsView } from "../components/commits";
 import { MembersList } from "../components/User"
 import { getProject, getProjectIssues, getMembers, getCommits, getCommitsByAllBranches, getNumberOfCommitsByAllBranches, getBranches } from "../services/api";
 import styles from './css/viewInfo.module.css';
 
 
-
-class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: any, issues: any, members: string[][], sorting_members: string, checkboxes: any, commits: any, commitsByBranch: any, xaxis: any }> {
+/**
+ * viewInfo displays all the information we gather from the project in a readable manner.
+ */
+class ViewInfo extends React.Component<{}, { token: any, project_id: any, data: any, issues: any, members: string[][], sorting_members: string, checkboxes: any, commits: any, commitsByBranch: any, xaxis: any }> {
     constructor(props: any) {
         super(props);
 
         this.state = {
             token: sessionStorage.getItem("token") || "",
-            project_id: sessionStorage.getItem("project_id")||0,
+            project_id: sessionStorage.getItem("project_id") || 0,
             data: " ",
             issues: null,
-            sorting_members: localStorage.getItem("sort") || "" ,
+            sorting_members: localStorage.getItem("sort") || "",
             checkboxes: this.getCheckboxes(localStorage.getItem("checkboxes")),
             members: [],
             commits: [],
@@ -31,14 +32,20 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
     }
 
+    /**
+     * Helper function that converts the checkbox string that is stored in localStorage to an array of boolean values.
+     * 
+     * @param checkbox  The string of the boolean values separated by commas
+     * @returns     An array of boolean values
+     */
     getCheckboxes(checkbox: any) {
         if (checkbox == null) {
             return [];
         } else {
             let checkbox_list_string = checkbox.split(",");
             let checkbox_list: any = [];
-            checkbox_list_string.forEach((element : string) => {
-                if (element === "true"){
+            checkbox_list_string.forEach((element: string) => {
+                if (element === "true") {
                     checkbox_list.push(true);
                 } else if (element === "false") {
                     checkbox_list.push(false);
@@ -49,6 +56,12 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         }
     }
 
+    /**
+     * Helper function that allows the selected parameter in each option of the select to be decided based on what is stored in localStorage.
+     * 
+     * @param value     The option's name
+     * @returns     True if the option should be the selected option
+     */
     selectedSort(value: string) {
         if (this.state.sorting_members == value) {
             return true;
@@ -58,22 +71,30 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
     }
 
+    /**
+     * On change, it updates the selected way of sorting.
+     * 
+     * @param event     Select is changed
+     */
     handleChange(event: any) {
         this.setState({
             sorting_members: event.target.value
         });
 
         localStorage.setItem("sort", event.target.value);
-        console.log(this.state.sorting_members);
-        // window.location.reload();
     }
-    
+
     handleChangeGraph(event: any) {
         this.setState({
             xaxis: event.target.value
         });
     }
 
+    /**
+     * On change, the boolean values for checkboxes are updated.
+     * 
+     * @param event     A checkbox is checked or unchecked
+     */
     handleCheckboxChange(event: any) {
         const id = parseInt(event.target.id);
 
@@ -85,12 +106,13 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         });
 
         localStorage.setItem("checkboxes", checkboxes);
-        console.log(this.state.checkboxes);
     }
 
+    /**
+     * Gets the values stored in local and session storage and updates the state.
+     */
     componentDidMount() {
-        console.log("Component Did MOunt");
-        
+
         if (sessionStorage.getItem("token") == null) {
             this.setState({
                 token: "",
@@ -103,7 +125,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
         if (localStorage.getItem("checkboxes") == null) {
             this.setState({
-                checkboxes : []
+                checkboxes: []
             })
         } else {
             this.setState({
@@ -111,9 +133,8 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             })
         }
 
-        console.log(this.state.token);
         this.setState({
-            data: getProject(this.state.token,this.state.project_id)
+            data: getProject(this.state.token, this.state.project_id) // Should be removed right?
         });
 
         // const data: any = getProject(this.state.token,this.state.project_id); // <-- blir ikke brukt ?
@@ -121,7 +142,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         // const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
         //console.log(this.state.data);
 
-        
+
 
         /* const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
         requestIssues.then((issues: any) => {
@@ -135,21 +156,21 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
         });
         */
 
-       const requestMembers: any = getMembers(this.state.token,this.state.project_id);
+        const requestMembers: any = getMembers(this.state.token, this.state.project_id);
         console.log(requestMembers);
-        
+
         requestMembers.then((members: string[][]) => {
             this.setState({
                 members: members
             });
             console.log(members);
-            
+
 
         }).catch((err: any) => {
             console.log("Failed Request (getMembers)");
         });
 
-        const requestCommits: any = getCommits(this.state.token,this.state.project_id);
+        const requestCommits: any = getCommits(this.state.token, this.state.project_id);
         requestCommits.then((commits: any) => {
             this.setState({
                 commits: commits
@@ -158,7 +179,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
             console.log("Failed Request (getCommits)");
         });
 
-        const requestCommitsByAllBranches: any = getCommitsByAllBranches(this.state.token,this.state.project_id);
+        const requestCommitsByAllBranches: any = getCommitsByAllBranches(this.state.token, this.state.project_id);
         requestCommitsByAllBranches.then((commitsByBranch: any) => {
             console.log(commitsByBranch);
             this.setState({
@@ -172,7 +193,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
     render() {
         return (
-            <main> 
+            <main>
                 <div className={styles.viewInfo}>
 
                     <div className={styles.info1}>
@@ -198,13 +219,13 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                                     <input type="checkbox" name="" id="3" checked={this.state.checkboxes[3]} onChange={this.handleCheckboxChange} />Bots &nbsp;
                                 </table>
                             </form>
-                            <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} /> 
+                            <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} />
                         </div>
                     </div>
 
                     <div className={styles.info3}>
                         <div className={styles.columnCommits}>
-                            <p className={styles.graph}> Project Statistics </p> 
+                            <p className={styles.graph}> Project Statistics </p>
                             <label>View graph: &nbsp;
                                 <select name={this.state.xaxis} onChange={this.handleChangeGraph}>
                                     <option value="person">Commits per person</option>
@@ -218,7 +239,7 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
                 </div>
             </main>
 
-            
+
         );
     }
 }
