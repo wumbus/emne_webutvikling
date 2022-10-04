@@ -29,6 +29,19 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
     if (xaxis == "person") {
         // find all comitters aka. all the different emails
         // find all emails in all the commits
+
+        commits.sort((a:any, b:any) => {
+            let aEmail = a[5].toLowerCase(),
+                bEmail = b[5].toLowerCase();
+            if (aEmail < bEmail) {
+                return -1;
+            }
+            if (aEmail > bEmail) {
+                return 1;
+            }
+            return 0;
+        });
+
         let committers: Array<string> = [];
         commits.forEach((commit: any) => {
             committers.push(commit[5]);
@@ -59,6 +72,10 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
 
     } else if (xaxis == "branch") {
         try {
+
+            // sort after branch number
+            let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+            commitsByBranch.sort(collator.compare);
 
             let countCommits: any = [];
             let branchNames: any = [];
