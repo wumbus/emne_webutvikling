@@ -181,7 +181,7 @@ class ViewInfo extends React.Component<{}, { token: string, project_id: string, 
                         <div className={styles.info1}>
                             <h1>Welcome to Project</h1>
                             <h3>{this.state.project_id}</h3>
-                            <Link className={styles.buttonBack} to={'/login'}>Back to access page</Link>
+                            <Link className={styles.buttonBack} to={'/'}>Back to access page</Link>
                             <button className={styles.buttonBack} onClick={this.changeTheme}>Change theme</button>
                         </div>
 

@@ -49,7 +49,6 @@ export function MembersList(props: { members: string[][]; sort: string; filterBy
 				}
 			});
 		}
-		console.log(filterBy[2]);
 
 		if (filterBy[2]) {
 			membersOrg.forEach((member: string[]) => {
@@ -74,8 +73,6 @@ export function MembersList(props: { members: string[][]; sort: string; filterBy
 		}
 
 	}
-
-	console.log(members);
 
 	// Handles the sorting
 	if (sorting == "number") {
