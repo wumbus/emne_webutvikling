@@ -30,12 +30,14 @@
 th{
     border-bottom: 0.5pt solid black;
 }
+/* #FCA326 #FC6D27 */
+/* #fc6e2752 #fca32654*/
 tr:nth-child(even) {
-    background-color:#fc6e2752;
+    background-color:#f0441052; 
     border-bottom: 1px solid;
 }
 tr:nth-child(odd) {
-    background-color:#fca32654;
+    background-color: #fcb82654;
     border-bottom: 1px solid;
 }
 td:first-child{
@@ -46,9 +48,6 @@ td{
     padding: 10px;
 }
 
-tr:nth-child(even){
-    background-color: antiquewhite;
-}
 th{
     border-bottom: 0.5pt solid black
 }
@@ -95,7 +94,7 @@ select {
   font-weight: 500;
   line-height: 5px;
   list-style: none;
-  margin: 0;
+  margin-bottom: 7px;
   padding: 5px 12px;
   text-align: center;
   transition: all 200ms;
@@ -104,7 +103,7 @@ select {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  background-color:#fc6e2752;
+  background-color:#FCA326;
 }
 
 

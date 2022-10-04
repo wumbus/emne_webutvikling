@@ -1,5 +1,6 @@
 import React from "react";
 import { ListFormat } from "typescript";
+import { CommitsView } from "../components/commits";
 import { MembersList } from "../components/User"
 import { getProject, getProjectIssues, getMembers, getCommits, getCommitsByAllBranches, getNumberOfCommitsByAllBranches, getBranches } from "../services/api";
 import styles from './css/viewInfo.module.css';
@@ -128,9 +129,9 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
                     <div className={styles.info2}>
                         <div className={styles.columnMembers}>
-                            <p className={styles.memberliste}>Liste over members</p>
+                            <p className={styles.memberliste}>Project Members</p>
                             <form className={styles.form}>
-                                <table>Sort by:
+                                <table>Sort by: &nbsp;
                                     <select name={this.state.sorting_members} onChange={this.handleChange}>
                                         <option value="number">Role</option>
                                         <option value="name">Name</option>
@@ -150,8 +151,14 @@ class ViewInfo extends React.Component<{}, { token: any, project_id:any, data: a
 
                     <div className={styles.info3}>
                         <div className={styles.columnCommits}>
-                        <p className={styles.graph}> Her kommer en graf</p> 
-                        <table> graf</table>
+                            <p className={styles.graph}> Project Statistics </p> 
+                            <label>View graph: &nbsp;
+                                <select name={this.state.xaxis} onChange={this.handleChangeGraph}>
+                                    <option value="person">Commits per person</option>
+                                    <option value="branch">Commits per branch</option>
+                                </select>
+                            </label>
+                            <CommitsView commits={this.state.commits} commitsByBranch={this.state.commitsByBranch} xaxis={this.state.xaxis} />
                         </div>
                     </div>
 

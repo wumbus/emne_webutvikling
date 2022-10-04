@@ -52,7 +52,7 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
         barData = {
             labels: Array.from(uniqueCommitters),
             datasets: [{
-                backgroundColor: "rgba(87, 121, 234, 0.6)",
+                backgroundColor: "#fc6e2794",  //Hover -> #fca32696 ?
                 data: countCommits
             }]
         }
@@ -73,7 +73,7 @@ export function CommitsView(props: { commits: any, commitsByBranch: any, xaxis: 
             barData = {
                 labels: branchNames,
                 datasets: [{
-                    backgroundColor: "rgba(87, 121, 234, 0.6)",
+                    backgroundColor: "#fc6e2794",  //Hover -> #fca32696 ?
                     data: countCommits
                 }]
             }
