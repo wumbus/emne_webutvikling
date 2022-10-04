@@ -1,3 +1,5 @@
+import React, {useContext} from 'react';
+import {ThemeContext, ThemeProvider, themes} from '../services/themeContext';
 /**
  * A helper function that converts a given value into its corresponding role in GitLab
  *
@@ -74,7 +76,6 @@ export function MembersList(props: { members: any; sort: any; filterBy: any }) {
 
 	// Handles the sorting
 	if (sorting == "number") {
-		console.log("fakk 2");
 		members.sort((a: any, b: any) => b[3] - a[3]);
 	} else if (sorting == "name") {
 
@@ -93,8 +94,13 @@ export function MembersList(props: { members: any; sort: any; filterBy: any }) {
 	};
 
 
+	// retrieve the context
+	let theme = useContext(ThemeContext);
+	console.log(theme);
+	
 	return (
-		<table>
+		 
+		<table style={{borderColor: theme.borderColor}}>
 			<th>Avatar</th>
 			<th>Name</th>
 			<th>User name</th>
@@ -105,6 +111,8 @@ export function MembersList(props: { members: any; sort: any; filterBy: any }) {
 		</table>
 	);
 }
+// set context type
+MembersList.contextType = ThemeContext;
 
 /**
  * A function that gets information about a particular member and returns a table row 

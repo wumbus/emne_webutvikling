@@ -4,32 +4,34 @@ import { CommitsView } from "../components/commits";
 import { MembersList } from "../components/User"
 import { getProject, getProjectIssues, getMembers, getCommits, getCommitsByAllBranches, getNumberOfCommitsByAllBranches, getBranches } from "../services/api";
 import styles from './css/viewInfo.module.css';
+import { ThemeContext, ThemeProvider, themes } from '../services/themeContext';
 
 
 /**
  * viewInfo displays all the information we gather from the project in a readable manner.
  */
-class ViewInfo extends React.Component<{}, { token: any, project_id: any, data: any, issues: any, members: string[][], sorting_members: string, checkboxes: any, commits: any, commitsByBranch: any, xaxis: any }> {
+class ViewInfo extends React.Component<{}, { token: any, project_id: any, issues: any, members: string[][], sorting_members: string, checkboxes: any, commits: any, commitsByBranch: any, xaxis: any, theme: any }> {
     constructor(props: any) {
         super(props);
 
         this.state = {
             token: sessionStorage.getItem("token") || "",
             project_id: sessionStorage.getItem("project_id") || 0,
-            data: " ",
             issues: null,
             sorting_members: localStorage.getItem("sort") || "",
             checkboxes: this.getCheckboxes(localStorage.getItem("checkboxes")),
             members: [],
             commits: [],
             commitsByBranch: [],
-            xaxis: "person"
+            xaxis: "person",
+            theme: themes.light
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeGraph = this.handleChangeGraph.bind(this);
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
         this.getCheckboxes = this.getCheckboxes.bind(this);
+        this.changeTheme = this.changeTheme.bind(this);
 
     }
 
@@ -92,6 +94,20 @@ class ViewInfo extends React.Component<{}, { token: any, project_id: any, data: 
     }
 
     /**
+     * Switches the theme between dark and light 
+     */
+    changeTheme(event: any) {
+        this.setState({
+            theme:
+                this.state.theme === themes.dark
+                    ? themes.light
+                    : themes.dark,
+        });
+    }
+
+
+
+    /**
      * On change, the boolean values for checkboxes are updated.
      * 
      * @param event     A checkbox is checked or unchecked
@@ -134,29 +150,6 @@ class ViewInfo extends React.Component<{}, { token: any, project_id: any, data: 
             })
         }
 
-        this.setState({
-            data: getProject(this.state.token, this.state.project_id) // Should be removed right?
-        });
-
-        // const data: any = getProject(this.state.token,this.state.project_id); // <-- blir ikke brukt ?
-
-        // const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
-        //console.log(this.state.data);
-
-
-
-        /* const requestIssues: any = getProjectIssues(this.state.token, this.state.project_id);
-        requestIssues.then((issues: any) => {
-            console.log(issues);
-            this.setState({
-                issues: issues
-            });
-
-        }).catch((err: any) => {
-            console.log("fakk issues");
-        });
-        */
-
         const requestMembers: any = getMembers(this.state.token, this.state.project_id);
         console.log(requestMembers);
 
@@ -192,64 +185,64 @@ class ViewInfo extends React.Component<{}, { token: any, project_id: any, data: 
 
     }
 
+
     render() {
+        let theme = this.state.theme;
         return (
-            <main>
-                       
-                <div className={styles.viewInfo}>
-                
-                {/* <div className={styles.info4}>
-                    </div> */}
+            <ThemeProvider value={theme}>
+                <main>
+                    <div className={styles.viewInfo} style={{ background: theme.background, color: theme.textColor }}>
 
-                    <div className={styles.info1}>
-                        <h1>Welcome to Project</h1>
-                        <h3>{this.state.project_id}</h3>
-                        <Link className={styles.buttonBack} to={'/login'}>Back to access page</Link> 
-                    </div>
+                        <div className={styles.info1}>
+                            <h1>Welcome to Project</h1>
+                            <h3>{this.state.project_id}</h3>
+                            <Link className={styles.buttonBack} to={'/login'}>Back to access page</Link>
+                            <button className={styles.buttonBack} onClick={this.changeTheme}>Change theme</button>
+                        </div>
 
-                  
+                        <div className={styles.info2}>
+                            <div className={styles.columnMembers}>
+                                <p className={styles.memberlist}>Project Members</p>
+                                <form className={styles.form}>
+                                    <table>Sort by: &nbsp;
+                                        <select name={this.state.sorting_members} onChange={this.handleChange} >
+                                            <option value="number" selected={this.selectedSort("number")}>Role</option>
+                                            <option value="name" selected={this.selectedSort("name")}>Name</option>
+                                        </select>
+                                    </table>
 
-                    <div className={styles.info2}>
-                        <div className={styles.columnMembers}>
-                            <p className={styles.memberlist}>Project Members</p>
-                            <form className={styles.form}>
-                                <table>Sort by: &nbsp;
-                                    <select name={this.state.sorting_members} onChange={this.handleChange}>
-                                        <option value="number" selected={this.selectedSort("number")}>Role</option>
-                                        <option value="name" selected={this.selectedSort("name")}>Name</option>
+                                    <table>Filter by: &nbsp;
+                                        <input type="checkbox" name="" id="0" checked={this.state.checkboxes[0]} onChange={this.handleCheckboxChange} />Developer &nbsp;
+                                        <input type="checkbox" name="" id="1" checked={this.state.checkboxes[1]} onChange={this.handleCheckboxChange} />Maintainer &nbsp;
+                                        <input type="checkbox" name="" id="2" checked={this.state.checkboxes[2]} onChange={this.handleCheckboxChange} />Owner &nbsp;
+                                        <input type="checkbox" name="" id="3" checked={this.state.checkboxes[3]} onChange={this.handleCheckboxChange} />Bots &nbsp;
+                                    </table>
+                                </form>
+                                <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} />
+                            </div>
+                        </div>
+
+                        <div className={styles.info3}>
+                            <div className={styles.columnCommits}>
+                                <p className={styles.graph}> Project Statistics </p>
+                                <label>View graph: &nbsp;
+                                    <select name={this.state.xaxis} onChange={this.handleChangeGraph}>
+                                        <option value="person">Commits per person</option>
+                                        <option value="branch">Commits per branch</option>
                                     </select>
-                                </table>
-
-                                <table>Filter by: &nbsp;
-                                    <input type="checkbox" name="" id="0" checked={this.state.checkboxes[0]} onChange={this.handleCheckboxChange} />Developer &nbsp;
-                                    <input type="checkbox" name="" id="1" checked={this.state.checkboxes[1]} onChange={this.handleCheckboxChange} />Maintainer &nbsp;
-                                    <input type="checkbox" name="" id="2" checked={this.state.checkboxes[2]} onChange={this.handleCheckboxChange} />Owner &nbsp;
-                                    <input type="checkbox" name="" id="3" checked={this.state.checkboxes[3]} onChange={this.handleCheckboxChange} />Bots &nbsp;
-                                </table>
-                            </form>
-                            <MembersList members={this.state.members} sort={this.state.sorting_members} filterBy={this.state.checkboxes} />
+                                </label>
+                                <CommitsView commits={this.state.commits} commitsByBranch={this.state.commitsByBranch} xaxis={this.state.xaxis} />
+                            </div>
                         </div>
+
                     </div>
-
-                    <div className={styles.info3}>
-                        <div className={styles.columnCommits}>
-                            <p className={styles.graph}> Project Statistics </p>
-                            <label>View graph: &nbsp;
-                                <select name={this.state.xaxis} onChange={this.handleChangeGraph}>
-                                    <option value="person">Commits per person</option>
-                                    <option value="branch">Commits per branch</option>
-                                </select>
-                            </label>
-                            <CommitsView commits={this.state.commits} commitsByBranch={this.state.commitsByBranch} xaxis={this.state.xaxis} />
-                        </div>
-                    </div>
-
-                </div>
-            </main>
-
+                </main>
+            </ThemeProvider>
 
         );
     }
 }
+
+ViewInfo.contextType = ThemeContext;
 
 export default ViewInfo;
