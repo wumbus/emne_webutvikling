@@ -7,6 +7,7 @@ test("Returns correct role", () => {
     expect(title(40)).toBe("Maintainer")
 });
 
+
 test("Snapshot for memberslist", () => {
 
     const members_given : any = [['Vahideh Rezaei', 'https://secure.gravatar.com/avatar/5a096b00ec3bbd22d9f3d761c3f23cfa?s=80&d=identicon', '40'],
@@ -23,6 +24,29 @@ test("Snapshot for memberslist", () => {
 
     expect(tree).toMatchSnapshot();
 })
+
+let filter: any = [true, false, false, false]
+
+
+
+test("Snapshot for memberslist, developer", () => {
+
+    const members: any = [['group_28525_bot', 'Jonatan devver', 'https://secure.gravatar.com/avatar/e0b7100e71618df8efdd8d28f32410fc?s=80&d=identicon', '30']];
+    let filterBy : any = [true, false, false, false];
+
+    let tree : any = renderer.create(<MembersList members={members} sort="name" filterBy={filterBy}/>);
+
+    expect(tree).toMatchSnapshot();
+})
+
+
+test("Returns correct role", () => {
+    expect(title(30)).toBe("Developer")
+});
+
+
+
+
 
 
 
