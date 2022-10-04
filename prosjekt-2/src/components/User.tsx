@@ -27,30 +27,30 @@ function title(value: number) {
  * @param filterBy  An array of booleans describing which roles to filter by
  * @returns     A list of members in the order they are to be displayed
  */
-export function MembersList(props: { members: any; sort: any; filterBy: any }) {
+export function MembersList(props: { members: string[][]; sort: string; filterBy: boolean[] }) {
 	const membersOrg = props.members;
 	const sorting = props.sort;
 	const filterBy = props.filterBy;
 
-	let members: any = [];
-	if (membersOrg[0] != 1) {
+	let members: string[][] = [];
+	if (membersOrg.length != 0) {
 		// Checks if members is set to the standard one or if there are actually members
 		if (filterBy[0]) {
-			membersOrg.forEach((member: any) => {
+			membersOrg.forEach((member: string[]) => {
 				if (member[3] == "30" && !members.includes(member)) {
 					members.push(member);
 				}
 			});
 		}
 		if (filterBy[1]) {
-			membersOrg.forEach((member: any) => {
+			membersOrg.forEach((member: string[]) => {
 				if (member[3] == "40" && !members.includes(member)) {
 					members.push(member);
 				}
 			});
 		}
 		if (filterBy[2]) {
-			membersOrg.forEach((member: any) => {
+			membersOrg.forEach((member: string[]) => {
 				if (member[3] == "50" && !members.includes(member)) {
 					members.push(member);
 				}
@@ -58,18 +58,15 @@ export function MembersList(props: { members: any; sort: any; filterBy: any }) {
 		}
 		if (filterBy[3]) {
 			// Bots
-			membersOrg.forEach((member: any) => {
-				// console.log(member[0]);
-
+			membersOrg.forEach((member: string[]) => {
 				if (member[0].includes("_bot") && !members.includes(member)) {
 					members.push(member);
 				}
 			});
 		}
-
 		// if none are selected show all
 		if (!(filterBy[0] || filterBy[1] || filterBy[2] || filterBy[3])) {
-			membersOrg.forEach((member: any) => {
+			membersOrg.forEach((member: string[]) => {
 				members.push(member);
 			});
 		}
@@ -77,10 +74,10 @@ export function MembersList(props: { members: any; sort: any; filterBy: any }) {
 
 	// Handles the sorting
 	if (sorting == "number") {
-		members.sort((a: any, b: any) => b[3] - a[3]);
+		members.sort((a: string[], b: string[]) => Number(b[3]) - Number(a[3]));
 	} else if (sorting == "name") {
 
-		members.sort((a: any, b: any) => {
+		members.sort((a: string[], b: string[]) => {
 			let aName = a[1].toLowerCase(),
 				bName = b[1].toLowerCase();
 
@@ -97,7 +94,6 @@ export function MembersList(props: { members: any; sort: any; filterBy: any }) {
 
 	// retrieve the context
 	let theme = useContext(ThemeContext);
-	console.log(theme);
 
 	return (
 
@@ -112,7 +108,7 @@ export function MembersList(props: { members: any; sort: any; filterBy: any }) {
 			</thead>
 			<tbody>
 
-				{members.map((member: any) => (
+				{members.map((member: string[]) => (
 					<MemberItem key={member[0]} value={member} />
 				))}
 			</tbody>

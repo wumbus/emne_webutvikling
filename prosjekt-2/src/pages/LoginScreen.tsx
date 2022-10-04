@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, DetailedHTMLProps, FormHTMLAttributes, FormEvent } from "react";
 import { getProject } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import styles from './css/LoginScreen.module.css';
@@ -15,7 +15,6 @@ type LoginScreenType = {
 /**
  * Gets the information needed to be displayed on the front page and displays it.
  *
- * @returns
  */
 const LoginScreen: FC = () => {
   const [state, setState] = useState<LoginScreenType>({
@@ -51,7 +50,7 @@ const LoginScreen: FC = () => {
    *
    * @param event   Button is clicked
    */
-  const handleFormSubmit = async (event: any) => {
+  const handleFormSubmit = async (event:FormEvent<HTMLFormElement>  ) => {
     event.preventDefault();
     const { token, project_id } = state;
     sessionStorage.setItem("token", token);
