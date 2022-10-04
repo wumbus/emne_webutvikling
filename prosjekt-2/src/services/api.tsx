@@ -1,13 +1,6 @@
-import React from "react";
-
-export type ProjectType = {
-  id: number;
-  description: string | null;
-  name: string;
-  creator_id: number;
-  message: string;
-};
-
+/**
+ * A type that stores the information we want from the GetIssues call.
+ */
 export type IssuesType = {
   iid: number;
   title: string;
@@ -15,6 +8,9 @@ export type IssuesType = {
   username: string;
 };
 
+/**
+ * A type that stores the information we want from the GetMembers call.
+ */
 export type MembersType = {
   username: string;
   name: string;
@@ -22,32 +18,41 @@ export type MembersType = {
   access_level: number;
 };
 
-// glpat-9CzoD9y7CQx2ujy4Ubmx
+export type CommitsType = {
+  id: string,
+  created_at: string,
+  title: string,
+  message: number,
+  committer_name: string,
+  committer_email: string
+}
 
-// export const getProject = async (token: string, project_id: string) => {
-//     const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}?private_token=${token}`);
-//     const data: ProjectType = await res.json();
-//     //   var dataParsed = await res.json();
+export type BranchesType = {
+  name: string
+}
 
-//     const { id, name, creator_id } = data;
-//     console.log(id, name, creator_id, data);
+// Projext id
+// 17464
 
-//     //   return dataParsed;
-//     return data;
-// }
+// Acces tokens
+// glpat-9CzoD9y7CQx2ujy4Ubmx Cecilie
+// glpat-wsMyuXMF-aYEBu9rXcED Jimmy
 
+/**
+ * Attempts to make a successful connection with the GitLab project using the provided access token.
+ * 
+ * @param token   The access token 
+ * @param project_id  The id of the project we want to access information from
+ * @returns   True if the connection is successfully established, false if not
+ */
 export const getProject = async (token: string, project_id: string) => {
   return await fetch(
     `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}?private_token=${token}`
   )
     .then((res) => {
-      if (res.ok) {
-        // True if HTTP status code is 200-299
-        console.log(res.ok)
-        //console.log(res)
+      if (res.ok) { // True if HTTP status code is in the inteval of 200-299
         return true;
       } else {
-        console.log("whyyyy")
         return false;
       }
     })
@@ -56,6 +61,13 @@ export const getProject = async (token: string, project_id: string) => {
     });
 };
 
+/**
+ * Fetches the issues from the requested project and stores the information in an IssueType.
+ *  
+ * @param token   The access token
+ * @param project_id  The id of the project we want to access information from
+ * @returns   An array of the issues in the project
+ */
 export const getProjectIssues = async (token: string, project_id: string) => {
   const res = await fetch(
     `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/issues?private_token=${token}`
@@ -71,6 +83,13 @@ export const getProjectIssues = async (token: string, project_id: string) => {
   return issuesArray;
 };
 
+/**
+ * Fetches the members from the requested project and stores the information in a MembersType.
+ * 
+ * @param token   The access token
+ * @param project_id The id of the project we want to access information from
+ * @returns   An array of the members in the project
+ */
 export const getMembers = async (token: string, project_id: string) => {
   const res = await fetch(
     `https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/members/all?private_token=${token}`
@@ -87,3 +106,112 @@ export const getMembers = async (token: string, project_id: string) => {
   
   return membersArray;
 };
+
+export const getCommits = async (token: string, project_id: string) => {
+  const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/repository/commits?per_page=100&private_token=${token}`);
+  const data: any = await res.json();
+
+  const commitsArray: Array<any> = [];
+
+  data.forEach((commit: CommitsType) => {
+      const { id, created_at, title, message, committer_name, committer_email } = commit;
+      // console.log(iid, title, assignee["username"]);
+      commitsArray.push([id, created_at, title, message, committer_name, committer_email]);
+  });
+  // console.log(commitsArray);
+
+  return commitsArray;
+}
+
+
+export const getBranches = async (token: string, project_id: string) => {
+  const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/repository/branches?private_token=${token}`);
+  const data: any = await res.json();
+
+  const BranchesArray: Array<any> = [];
+
+  data.forEach((branch: BranchesType) => {
+      const { name } = branch
+      // console.log(iid, title, assignee["username"]);
+      BranchesArray.push(name);
+  });
+  // console.log(BranchesArray);
+  return BranchesArray;
+}
+
+export const getCommitsByBranch = async (token: string, project_id: string, branch_name: string) => {
+  // console.log("Branch_name:" + branch_name);
+  
+  const res = await fetch(`https://gitlab.stud.idi.ntnu.no/api/v4/projects/${project_id}/repository/commits?per_page=100&ref_name=${branch_name}&private_token=${token}`);
+  const data: any = await res.json();
+
+  const commitsArray: Array<any> = [];
+
+  data.forEach((commit: CommitsType) => {
+      const { id, created_at, title, message, committer_name, committer_email } = commit;
+      // console.log(iid, title, assignee["username"]);
+      commitsArray.push([id, created_at, title, message, committer_name, committer_email]);
+  });
+  // console.log(commitsArray);
+
+  return commitsArray;
+}
+
+export const getCommitsByAllBranches = async (token: string, project_id: string) => {
+  let branches = ["main"];
+  let commitsByBranch: any = [];
+  // let commitsByBranch: any = {};
+
+  const requestBranches: any = getBranches(token,project_id);
+  requestBranches.then((bran: Array<string>) => {
+      // console.log("Bran:" + bran);
+      branches = bran;
+
+      for (let i = 0; i < branches.length; i++) {
+          // console.log("branch: " + branches[i]);
+          const requestCommits: any = getCommitsByBranch(token,project_id, branches[i]);
+          requestCommits.then((commits: any) => {
+              commitsByBranch.push([branches[i], commits]);
+              // commitsByBranch[branches[i]] = commits;
+          }).catch((err: any) => {
+              console.log("Problem with getCommitsByBranch");
+          });
+      }
+      // console.log(commitsByBranch);
+  }).catch((err: any) => {
+      console.log("Problem with getBranches");
+  });
+  // console.log(commitsByBranch);
+
+  return commitsByBranch;
+}
+
+export const getNumberOfCommitsByAllBranches = async (token: string, project_id: string) => {
+  let branches = ["main"];
+  let commitsByBranch: Array<any> = [];
+  // let commitsByBranch: any = {};
+
+  const requestBranches: any = getBranches(token,project_id);
+  requestBranches.then((bran: any) => {
+      // console.log("Bran:" + bran);
+      branches = bran;
+
+      for (let i = 0; i < branches.length; i++) {
+          // console.log("branch: " + branches[i]);
+          const requestCommits: any = getCommitsByBranch(token, project_id, branches[i]);
+          requestCommits.then((commits: any) => {
+              commitsByBranch.push(commits.length);
+              // commitsByBranch[branches[i]] = commits;
+          }).catch((err: any) => {
+              console.log("Problem with getCommitsByBranch");
+          });
+      }
+      // console.log(commitsByBranch);
+  }).catch((err: any) => {
+      console.log("Problem with getBranches");
+  });
+  // console.log(commitsByBranch);
+
+  return commitsByBranch;
+}
+
